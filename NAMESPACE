@@ -1,9 +1,9 @@
 useDynLib(exageostatdev)
 export(TestWrapper)
-export(exageostat_gen_zR)
-export(exageostat_likelihoodR)
-export(exageostat_initR)
-export(exageostat_finalizeR)
+export(rexageostat_gen_zR)
+export(rexageostat_likelihoodR)
+export(rexageostat_initR)
+export(rexageostat_finalizeR)
 
 
 

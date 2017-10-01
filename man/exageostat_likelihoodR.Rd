@@ -2,11 +2,11 @@
 \alias{exageostat_likelihood}
 \title{ Sets up the call to the exageostat_gen_z() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{exageostat_likelihood} demonstrates the R / C language interface
+  \code{rexageostat_likelihood} demonstrates the R / C language interface
 }
 
 \usage{
-exageostat_likelihood(n,
+rexageostat_likelihood(n,
 		ncores,
 		gpus,
 		ts,

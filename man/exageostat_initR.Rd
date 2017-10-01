@@ -2,11 +2,11 @@
 \alias{exageostat_init}
 \title{ Sets up the call to the exageostat_gen_z() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{exageostat_init} demonstrates the R / C language interface
+  \code{rexageostat_init} demonstrates the R / C language interface
 }
 
 \usage{
-exageostat_init(ncores,
+rexageostat_init(ncores,
 		gpus,
 		ts)
 }

@@ -2,11 +2,11 @@
 \alias{exageostat_finalize}
 \title{ Sets up the call to the exageostat_gen_z() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{exageostat_finalize} demonstrates the R / C language interface
+  \code{rexageostat_finalize} demonstrates the R / C language interface
 }
 
 \usage{
-exageostat_finalize()
+rexageostat_finalize()
 }
 
 \arguments{

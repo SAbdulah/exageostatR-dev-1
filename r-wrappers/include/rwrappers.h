@@ -17,9 +17,9 @@
 #define _RWRAPPERS_H_
 #include "../../src/include/MLE.h"
 
-void  exageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  char *theta, char *computation, char *dmetric, double *vecs__out);
-void  exageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, double *y, double *z, char *clb, char *cub,  char *computation, char *dmetric, double * theta_out);
-void exageostat_init(int *ncores, int *gpus, int *ts);
-void exageostat_finalize();
+void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  char *theta, char *computation, char *dmetric, double *vecs__out);
+void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, double *y, double *z, char *clb, char *cub,  char *computation, char *dmetric, double * theta_out);
+void  rexageostat_init(int *ncores, int *gpus, int *ts);
+void  rexageostat_finalize();
 
 #endif

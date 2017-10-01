@@ -15,7 +15,7 @@
  **/
 #include "../include/rwrappers.h"
 
-void  exageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  char *theta, char *computation, char *dmetric, double *vecs_out)
+void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  char *theta, char *computation, char *dmetric, double *vecs_out)
 {
 	//initialization
         int i=0;
@@ -72,7 +72,7 @@ void  exageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int
 
 }
 
-void  exageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, double *y, double *z, char *clb, char *cub,  char *computation, char *dmetric, double * theta_out)
+void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, double *y, double *z, char *clb, char *cub,  char *computation, char *dmetric, double * theta_out)
 {
 	//initialization
         int i=0;
@@ -138,13 +138,13 @@ void  exageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_gri
 }
 
 
-void exageostat_init(int *ncores, int *gpus, int *ts)
+void rexageostat_init(int *ncores, int *gpus, int *ts)
 {
 //MORSE_user_tag_size(31,26);
         MORSE_Init(*ncores, *gpus);
         MORSE_Set(MORSE_TILE_SIZE, *ts);
 }
-void exageostat_finalize()
+void rexageostat_finalize()
 {
 
         MORSE_Finalize();

@@ -38,7 +38,7 @@ browser()
 # done. 
 #
 }
-exageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta, compuation, dmetric)
+rexageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta, compuation, dmetric)
 {
 vecs_out= .C("exageostat_gen_zR",
 		as.integer(n),
@@ -55,7 +55,7 @@ return(vecs_out)
 }
 
 
-exageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, compuation, dmetric)
+rexageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, compuation, dmetric)
 {
 
 
@@ -77,7 +77,7 @@ theta_out= .C("exageostat_likelihoodR",
   return(theta_out)
 }
 
-exageostat_initR <- function(ncores, gpus, ts)
+rexageostat_initR <- function(ncores, gpus, ts)
 {
 	.C("exageostat_initR",
                 as.integer(ncores),
@@ -86,7 +86,7 @@ exageostat_initR <- function(ncores, gpus, ts)
 print("back from exageostat_init C function call. Hit key....")
 }
 
-exageostat_finalizeR <- function()
+rexageostat_finalizeR <- function()
 {
 	.C("exageostat_finalizeR")
 print("back from exageostat_finalize C function call. Hit key....")
