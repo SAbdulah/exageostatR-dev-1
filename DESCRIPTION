@@ -1,0 +1,13 @@
+Package: exageostatdev
+Version: 0.0
+Date: 2017-09-12
+Title: Sample R package demonstrates the R / C Language interface
+Author: Rick Reeves <reeves@nceas.ucsb.edu>
+Maintainer: Rick Reeves <reeves@nceas.ucsb.edu>
+Depends: R (>= 2.0.1)
+Description: CalcMatrixAvg passes a two-dimensional matrix
+  into a C function via the .C() interface function, where
+  the average of the matrix is calculated.
+  This case demonstrates the details of the R / C function interface. 
+License: GPL (version 2 or later)
+Packaged: Fri Mar  7 13:01:38 2008; reeves
