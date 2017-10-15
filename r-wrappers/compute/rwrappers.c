@@ -15,10 +15,15 @@
  **/
 #include "../include/rwrappers.h"
 
-void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  char *theta, char *computation, char *dmetric, double *vecs_out)
+void  rexageostat_gen_z(int *n, int *ncores,  int *gpus,  int *ts,  int *p_grid, int *q_grid,  double *theta1, double *theta2, double *theta3,  int *computation, int *dmetric, int *veclen,  double *globalvec)
 {
+ 	rexageostat_init(ncores,gpus, ts);
+
+	
+
 	//initialization
         int i=0;
+	int iCtr=0;
 	int log=0, verbose=0;
 	double  *initial_theta;
         MLE_data data;
@@ -27,17 +32,26 @@ void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, in
         MORSE_request_t mrequest[2] = { MORSE_REQUEST_INITIALIZER, MORSE_REQUEST_INITIALIZER };
 
 	initial_theta=(double *) malloc(3 * sizeof(double));
+	double *localvec = (double *) malloc( *veclen * sizeof(double));
 
-	data.l1.x=vecs_out;
-	data.l1.y=&vecs_out[*n];
+	data.l1.x=localvec;
+	data.l1.y=&localvec[*n];
 
 	//Generate XY locs
 	GenerateXYLoc(*n, "", &data.l1);
+
 	
         //set data struct
-	data.computation = computation;
+	if(*computation==0)
+	{	data.computation = "exact";
+}	
+else if(*computation==1)
+		data.computation = "appro";
         data.verbose=verbose;
-        data.dm=dmetric;
+	if(*dmetric == 0)
+        	data.dm="ed";
+	else if(*dmetric == 1)
+		data.dm = "gcd";
         data.l2=data.l1;
 	data.async=0;
 	data.obsFPath="";
@@ -45,10 +59,12 @@ void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, in
         gsl_set_error_handler_off () ;
 	
 	//parse theta to initial_theta
-	theta_parser2(initial_theta, theta);
-        
+//	theta_parser2(initial_theta, theta);
+  	initial_theta[0]=*theta1;
+	initial_theta[1]=*theta2;
+	initial_theta[2]=*theta3;      
 	//nomral random generation of e -- ei~N(0, 1) to generate Z
-	LAPACKE_dlarnv(3, iseed, *n, &vecs_out[2**n]);
+	LAPACKE_dlarnv(3, iseed, *n, &localvec[2**n]);
 
 
 	MORSE_Sequence_Create(&msequence);
@@ -57,39 +73,58 @@ void  rexageostat_gen_z(int *n, int *ncores, int *gpus, int *ts, int *p_grid, in
 	data.sequence          = msequence;
         data.request           = mrequest;
 
-
         //Main algorithm call
-        MLE_zvg(&data, &vecs_out[2**n], initial_theta, *n, ts, 1, log) ;
-	MORSE_Tile_to_Lapack(data.descZ, &vecs_out[2**n], *n);    
+        MLE_zvg(&data, &localvec[2**n], initial_theta, *n, ts, 1, log) ;
+	MORSE_Tile_to_Lapack(data.descZ, &localvec[2**n], *n);    
 
-	
+	//copy local vector to global vector in R memory space
+	for (iCtr = 0; iCtr < *veclen; iCtr++)
+{
+		*(globalvec + iCtr) = *(localvec + iCtr);	
+//		printf ("%f ",*(globalvec + iCtr));
+}		
 
 	MORSE_Desc_Destroy( &data.descC );
         MORSE_Desc_Destroy( &data.descZ);
 
 	free(initial_theta);
-
+  	rexageostat_finalize();
 
 }
 
-void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, double *y, double *z, char *clb, char *cub,  char *computation, char *dmetric, double * theta_out)
+void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_grid, int *q_grid,  double *x, int *xlen, double *y, int *ylen, double *z, int *zlen, double *clb, int *clblen, double *cub, int *cublen,  int *computation, int *dmetric, double *globalthetaout)
 {
+//	printf("\n=======================================\n");
+//	printf("%f, %f, %f, %f, %f, %f, %f, %f %f,  %d, %d\n", x[0], y[0],z[0], clb[0], cub[0], clb[1], cub[1], clb[2], cub[2], *computation, *dmetric);
+	rexageostat_init(ncores,gpus,ts);
 	//initialization
         int i=0;
+	int iCtr=0;
 	int log=0, verbose=0;
         double time_opt=0.0;
         double max_loglik=0.0;
         double * opt_f;
         nlopt_opt opt;
         MLE_data data;
-	double *lb= (double *) malloc(3 * sizeof(double));
-        double *ub= (double *) malloc(3 * sizeof(double));	
 	double *starting_theta = (double *) malloc(3 * sizeof(double));
 
-	//Assign inputs
-        data.computation = computation;
+
+
+
+      if(*computation==0)
+        {       data.computation = "exact";
+}
+else if(*computation==1)
+                data.computation = "appro";
         data.verbose=verbose;
-        data.dm=dmetric;
+        if(*dmetric == 0)
+                data.dm="ed";
+        else if(*dmetric == 1)
+                data.dm = "gcd";
+
+//	double theta_out= (double*) malloc (3* sizeof(double));
+	//Assign inputs
+        data.verbose=verbose;
         data.async=0;
 	data.l1.x=x;
 	data.l1.y=y;
@@ -97,15 +132,14 @@ void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_gr
         data.iter_count=0;
 	data.log=log;
 	//parse char* to double *
-        theta_parser2(lb, clb);
-	theta_parser2(ub, cub);
-	starting_theta[0]=lb[0];
-	starting_theta[1]=lb[1];
-	starting_theta[2]=lb[2];
 
+	for(i=0;i<3;i++)
+	{
+	starting_theta[i]=clb[i];
+}
 
 	//optimizer initialization
-        init_optimizer(&opt, lb, ub, 1e-5);
+        init_optimizer(&opt, clb, cub, 1e-5);
 
 	//if(data.based_sys==1)
         MORSE_Call(&data, *ncores,*gpus, *ts, *p_grid, *q_grid, *n,  0, 0);
@@ -129,12 +163,20 @@ void  rexageostat_likelihood(int *n,  int *ncores, int *gpus, int *ts, int *p_gr
         MORSE_Desc_Destroy( &data.descZcpy );
         MORSE_Desc_Destroy( &data.descproduct );
         MORSE_Desc_Destroy( &data.descdet );
-	free(ub);
-	free(lb);
 	//printf("%f - %f - %f\n", starting_theta[0], starting_theta[1], starting_theta[2]);
-	theta_out[0]=starting_theta[0];
-	theta_out[1]=starting_theta[1];
-        theta_out[2]=starting_theta[2];
+//	theta_out[0]=starting_theta[0];
+//	theta_out[1]=starting_theta[1];
+  //      theta_out[2]=starting_theta[2];
+          //copy local vector to global vector in R memory space
+
+        for (iCtr = 0; iCtr < 3; iCtr++)
+
+{
+                *(globalthetaout + iCtr) = *(starting_theta + iCtr);
+              //  printf ("%f ",*(globalvec + iCtr));
+}
+
+	     rexageostat_finalize();
 }
 
 
@@ -143,6 +185,7 @@ void rexageostat_init(int *ncores, int *gpus, int *ts)
 //MORSE_user_tag_size(31,26);
         MORSE_Init(*ncores, *gpus);
         MORSE_Set(MORSE_TILE_SIZE, *ts);
+	printf("sameh0\n");
 }
 void rexageostat_finalize()
 {
