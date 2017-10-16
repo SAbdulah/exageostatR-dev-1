@@ -1,23 +1,39 @@
-	install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
-        library(exageostat)
-	theta1 = 1
-        theta2 = 0.1
-        theta3 = 0.5
-        computation = 0  #exact
-        dmetric = 0     #ed
-        n=19881
-        ncores=32
-        gpus=0
-        ts=320
-        p_grid=1
-        q_grid=1
-        clb = vector(mode="character",length = 3)
-        cub = vector(mode="character",length = 3)
-        theta_out = vector(mode="numeric",length = 3)
-        clb=as.numeric(c("0.01","0.01","0.01"))
-        globalveclen =  3*n
-        cub=as.numeric(c("5","5","5"))
-        vecs_out = vector(mode="numeric",length = globalveclen)
-        vecs_out[1:globalveclen] = -1.99
-        vecs_out = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
-        theta_out = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
+library("exageostat")
+library("RhpcBLASctl")
+
+#To use all system cores
+ncores=get_num_cores()-1
+
+#ncores=32
+
+#RhpcBLASctl function call
+blas_get_num_procs()
+blas_set_num_threads(1)
+omp_set_num_threads(1)
+	
+#Inputs
+theta1 = 1
+theta2 = 0.1
+theta3 = 0.5
+computation = 0  #exact
+dmetric = 0     #ed
+n=19881
+gpus=0
+ts=320
+p_grid=1
+q_grid=1
+clb = vector(mode="numeric",length = 3)
+cub = vector(mode="numeric",length = 3)
+theta_out = vector(mode="numeric",length = 3)
+clb=as.numeric(c("0.01","0.01","0.01"))
+globalveclen =  3*n
+cub=as.numeric(c("5","5","5"))
+vecs_out = vector(mode="numeric",length = globalveclen)
+vecs_out[1:globalveclen] = -1.99
+theta_out[1:3]= -1.99
+
+#Generate Z observation vector
+vecs_out = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+#Estimate MLE parameters
+theta_out = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
