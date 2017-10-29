@@ -30,7 +30,7 @@ git clone https://github.com/ecrc/exageostatR.git
 2. mv ./examples ./src
 3. mv Makefile-shlib  Makefile
 4. R CMD check exageostatR
-5. R CMD build exageostatR
+5. R CMD BUILD exageostatR
 
 #### Use ExaGeoStatR
 ``` r
