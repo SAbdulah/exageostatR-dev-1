@@ -15,7 +15,7 @@ git clone https://github.com/ecrc/exageostatR.git
 git submodule init
 git submodule update
 
-# Usa ExaGeoStatR
+# Use ExaGeoStatR
 ``` r
 library("exageostatR")
 ```
