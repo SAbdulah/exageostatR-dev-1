@@ -8,10 +8,13 @@ Getting Started
 
 ### Install
 
-### Install from GitHub
+# git clone exageostatR repo
+git clone https://github.com/ecrc/exageostatR.git
+# Update submodules
+git submodule init
+git submodule update
+
 ``` r
-# install.packages("devtools")
-devtools::install_github("ecrc/exageostatR")
 library("exageostatR")
 ```
 
