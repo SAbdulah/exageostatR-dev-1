@@ -13,6 +13,7 @@ git clone https://github.com/ecrc/exageostatR.git
 
 #### Update submodules
 git submodule init
+
 git submodule update
 
 #### Use ExaGeoStatR
