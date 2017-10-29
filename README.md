@@ -8,14 +8,14 @@ Getting Started
 
 ### Install
 
-# git clone exageostatR repo
+#### git clone exageostatR repo
 git clone https://github.com/ecrc/exageostatR.git
 
-# Update submodules
+#### Update submodules
 git submodule init
 git submodule update
 
-# Use ExaGeoStatR
+#### Use ExaGeoStatR
 ``` r
 library("exageostatR")
 ```
