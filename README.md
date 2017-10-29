@@ -8,6 +8,15 @@ Getting Started
 
 ### Install
 
+#### install dependencies
+1. Portable Hardware Locality (hwloc).
+2. NLopt.
+3. GNU Scientific Library (GSL).
+4. StarPU : a runtime system.
+5. Chameleon : a dense linear algebra software.
+
+Easy installation of the above packages is available by using install_cpu.sh
+
 #### git clone exageostatR repo
 git clone https://github.com/ecrc/exageostatR.git
 
@@ -16,8 +25,17 @@ git submodule init
 
 git submodule update
 
+
+#### Build R package
+mv ./r-wrappers ./src
+mv ./examples ./src
+mv Makefile-shlib  Makefile
+R CMD check exageostatR
+R CMD build exageostatR
+
 #### Use ExaGeoStatR
 ``` r
+install.packages(repos=NULL, "exageostatR_0.1.0.tar.gz")
 library("exageostatR")
 ```
 
