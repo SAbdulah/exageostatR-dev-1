@@ -28,7 +28,7 @@ git clone https://github.com/ecrc/exageostatR.git
 #### Build R package
 1. mv ./r-wrappers ./src
 2. mv ./examples ./src
-3. mv Makefile-shlib  Makefile
+3. mv ./src/Makefile-shlib  ./src/Makefile
 4. R CMD check exageostatR
 5. R CMD BUILD exageostatR
 
