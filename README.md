@@ -21,17 +21,16 @@ Easy installation of the above packages is available by using install_cpu.sh
 git clone https://github.com/ecrc/exageostatR.git
 
 #### Update submodules
-git submodule init
-
-git submodule update
+1. git submodule init
+2. git submodule update
 
 
 #### Build R package
-mv ./r-wrappers ./src
-mv ./examples ./src
-mv Makefile-shlib  Makefile
-R CMD check exageostatR
-R CMD build exageostatR
+1. mv ./r-wrappers ./src
+2. mv ./examples ./src
+3. mv Makefile-shlib  Makefile
+4. R CMD check exageostatR
+5. R CMD build exageostatR
 
 #### Use ExaGeoStatR
 ``` r
