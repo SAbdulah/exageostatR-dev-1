@@ -10,10 +10,12 @@ Getting Started
 
 # git clone exageostatR repo
 git clone https://github.com/ecrc/exageostatR.git
+
 # Update submodules
 git submodule init
 git submodule update
 
+# Usa ExaGeoStatR
 ``` r
 library("exageostatR")
 ```
