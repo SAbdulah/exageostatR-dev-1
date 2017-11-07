@@ -22,7 +22,7 @@ export MKLROOT=$MKL_DIR
 echo '. '$MKLROOT'/bin/mklvars.sh intel64'
 echo '. '$MKLROOT'/bin/mklvars.sh intel64' >> ~/.bashrc
 echo 'export MKLROOT='$MKL_DIR >> ~/.bashrc
-
+echo '.libPaths( c( .libPaths(), "'$MKL_DIR'lib/intel64") )' >> ~/.Rprofile
 #*****************************************************************************download exageostat
 #if git -C $PWD remote -v | grep -q 'https://github.com/ecrc/exageostat-dev'
 #then
@@ -54,6 +54,7 @@ make -j
 make -j install
 export PKG_CONFIG_PATH=$PWD/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH
 echo 'export PKG_CONFIG_PATH='$PWD'/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+echo '.libPaths( c( .libPaths(), "'$PWD'/nlopt_install/lib") )' >> ~/.Rprofile
 #*****************************************************************************install gsl
 cd $SETUP_DIR
 if [ ! -d "gsl-2.4" ]; then
@@ -67,6 +68,7 @@ make -j
 make -j install
 export PKG_CONFIG_PATH=$PWD/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH
 echo 'export PKG_CONFIG_PATH='$PWD'/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+echo '.libPaths( c( .libPaths(), "'$PWD'/gsl_install/lib") )' >> ~/.Rprofile
 #*****************************************************************************install cmake
 cd $SETUP_DIR
 if [  ! -d "cmake-3.10.0-rc3" ]; then
@@ -93,6 +95,7 @@ make -j
 make -j install
 export PKG_CONFIG_PATH=$PWD/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH
 echo 'export PKG_CONFIG_PATH='$PWD'/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+echo '.libPaths( c( .libPaths(), "'$PWD'/hwloc_install/lib") )' >> ~/.Rprofile
 #*****************************************************************************install Starpu
 cd $SETUP_DIR
 if [ ! -d "starpu-1.2.1" ]; then
@@ -106,6 +109,7 @@ make -j
 make -j  install
 export PKG_CONFIG_PATH=$PWD/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH
 echo 'export PKG_CONFIG_PATH='$PWD'/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+echo '.libPaths( c( .libPaths(), "'$PWD'/starpu_install/lib") )' >> ~/.Rprofile
 #*****************************************************************************install chameleon
 cd $SETUP_DIR
 # Check if we are already in exageostat repo dir or not.
@@ -129,6 +133,7 @@ make
 make install
 export PKG_CONFIG_PATH=$PWD/installdir/lib/pkgconfig:$PKG_CONFIG_PATH
 echo 'export PKG_CONFIG_PATH='$PWD'/installdir/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+echo '.libPaths( c( .libPaths(), "'$PWD'/installdir/lib") )' >> ~/.Rprofile
 #***************************************************************************install exageostat
 cd $EXAGEOSTATDEVDIR
 rm -rf build

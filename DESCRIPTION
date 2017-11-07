@@ -1,4 +1,5 @@
 Package: exageostat
+SystemRequirements: GNU make
 Version: 0.1.0
 Date: 2017-10-10
 Title: R package demonstrates the R / C Language interface for exageostat
@@ -14,3 +15,4 @@ Description: ExaGeoStat is a parallel high performance
    systems: clusters of CPUs and GPUs.
 License: GPL (version 2 or later)
 Packaged: Fri Oct. 12 13:01:38 2017; sameh
+

@@ -7,9 +7,9 @@ citEntry(entry="Manual",
          title = "ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems",
          author = personList(as.person("Sameh Abdulah"), as.person("Hatem Ltaief"), as.person("Ying Sun"), as.person("Marc G. Genton"), as.person("David E. Keyes")),
          year = 2017,
-         note = v0.1.0,
+         note = ,
          textVersion =
            paste("Sameh Abdulah, Hatem Ltaief, Ying Sun, Marc G. Genton, and David E. Keyes (",
                  2017,
                  "). ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems.",
-                 vers, "v0.1.0", sep=""))
+                 vers, "", sep=""))
