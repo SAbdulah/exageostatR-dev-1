@@ -2,8 +2,6 @@ useDynLib(exageostat)
 export(TestWrapper)
 export(rexageostat_gen_zR)
 export(rexageostat_likelihoodR)
-
-
-
-
+export(rexageostat_initR)
+export(rexageostat_finalizeR)
 

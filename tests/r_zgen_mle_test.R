@@ -1,16 +1,16 @@
-install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
+#install.packages(repos=NULL, "RhpcBLASctl_0.15-148.tar.gz")
+#install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
 library("exageostat")
-library("RhpcBLASctl")
-
+#library("RhpcBLASctl")
 #To use all system cores
-ncores=get_num_cores()-1
+#ncores=get_num_cores()-1
 
-#ncores=32
+ncores=1
 
 #RhpcBLASctl function call
-blas_get_num_procs()
-blas_set_num_threads(1)
-omp_set_num_threads(1)
+#blas_get_num_procs()
+#blas_set_num_threads(1)
+#omp_set_num_threads(1)
 	
 #Inputs
 theta1 = 1
@@ -18,7 +18,7 @@ theta2 = 0.1
 theta3 = 0.5
 computation = 0  #exact
 dmetric = 0     #ed
-n=19881
+n=1600
 gpus=0
 ts=320
 p_grid=1
@@ -33,7 +33,9 @@ vecs_out = vector(mode="numeric",length = globalveclen)
 vecs_out[1:globalveclen] = -1.99
 theta_out[1:3]= -1.99
 
+rexageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
 vecs_out = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
 #Estimate MLE parameters
-theta_out = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+#theta_out = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+rexageostat_finalizeR()

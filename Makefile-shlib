@@ -13,7 +13,7 @@ flagsl := $(shell pkg-config nlopt gsl libstarpu chameleon  --libs)
 CCFLAGS   := -O3  -w -Ofast -Wall $(flagsc) -DVERSION=\"$(GIT_VERSION)\"
 LDFLAGS   := -O3  -w -Ofast -lstarpu-1.2   -lchameleon  -lchameleon_starpu -lcoreblas -lstdc++  -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl $(flagsl)
 # Extra user flags
-#EXTRA_CCFLAGS = -I$(PLASMADIR)/include -I./ -DCHAMELEON_USE_MPI  -DCHAMELEON_COPY_DIAG -I$(CHAMELEONDIR)/hqr/build/installdir/include/libhqr/
+EXTRA_CCFLAGS = -I$(PLASMADIR)/include -I./src/include/ -I./exageostat_exact/core/include/ -I./exageostat_exact/runtime/starpu/include/ -I./misc/include/ -I ./exageostat_exact/src/include/ -I ./r-wrappers/include -I/home/abdullsm/codes/chameleon/coreblas/include/coreblas
 # Optimisation flags
 #CXXFLAGS := $(CCFLAGS)
 
@@ -31,7 +31,7 @@ OBJ_FILES = $(patsubst %.c,%.o,$(SOURCE_FILES))
 
 OBJECTS = $(patsubst %.o)
 exageostat.so:    $(OBJ_FILES)
-	R CMD SHLIB -o exageostat.so $(OBJ_FILES) -Ofast -lstarpu-1.2   -lchameleon  -lchameleon_starpu -lcoreblas -lstdc++  -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl $(flagsl)
+	R CMD SHLIB -o exageostat.so $(OBJ_FILES)  -Ofast -lstarpu-1.2   -lchameleon  -lchameleon_starpu -lcoreblas -lstdc++  -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl $(flagsl)
 
 #.c.o; $(CC) $(OPTS) -c $<
 

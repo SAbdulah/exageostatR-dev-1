@@ -12,9 +12,9 @@ rexageostat_init(ncores,
 }
 
 \arguments{
-  \item{ ncores }	{ Integer - CPU threads }
-  \item{ gpus }		{ Integer - GPU threads }
-  \item{ ts }		{ Integer - tile size }
+  \item{ ncores }{ Integer - CPU threads }
+  \item{ gpus }{ Integer - GPU threads }
+  \item{ ts }{ Integer - tile size }
 }
 
 \value{

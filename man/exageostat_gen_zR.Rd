@@ -18,16 +18,16 @@ rexageostat_gen_zR(n,
 }
 
 \arguments{
-  \item{ n }		{ Integer - number of locations in the incoming data (real mode) or generated data (test mode) }
-  \item{ ncores }	{ Integer - CPU threads }
-  \item{ gpus }		{ Integer - GPU threads }
-  \item{ ts }		{ Integer - tile size }
-  \item{ p_grid }	{ Integer - (p,q) 2-D block-cyclic distribution grid }
-  \item{ q_grid }	{ Integer - (p,q) 2-D block-cyclic distribution grid }
-  \item{ theta }	{ Double vector - initial theta values to generate z }
-  \item{ computation }	{ String - "exact" or "approx" }
-  \item{ dmetric }	{ String - "dm" or "gcd" }
-  \item{ vecs_out }    { Double vector - locations x, locations y, observations z at (x,y) }
+  \item{ n }{ Integer - number of locations in the incoming data (real mode) or generated data (test mode) }
+  \item{ ncores }{ Integer - CPU threads }
+  \item{ gpus }{ Integer - GPU threads }
+  \item{ ts }{ Integer - tile size }
+  \item{ p_grid }{ Integer - (p,q) 2-D block-cyclic distribution grid }
+  \item{ q_grid }{ Integer - (p,q) 2-D block-cyclic distribution grid }
+  \item{ theta }{ Double vector - initial theta values to generate z }
+  \item{ computation }{ String - "exact" or "approx" }
+  \item{ dmetric }{ String - "dm" or "gcd" }
+  \item{ vecs_out }{ Double vector - locations x, locations y, observations z at (x,y) }
 
 }
 
