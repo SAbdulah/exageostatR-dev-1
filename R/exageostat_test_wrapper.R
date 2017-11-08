@@ -88,6 +88,11 @@ return(theta_out)
 
 rexageostat_initR <- function(ncores, gpus, ts)
 {
+	#install.packages(repos="https://cran.r-project.org", "RhpcBLASctl")
+        library(RhpcBLASctl)
+	blas_get_num_procs()
+	blas_set_num_threads(1)
+	omp_set_num_threads(1)
 	.C("rexageostat_init",
                 as.integer(ncores),
                 as.integer(gpus),

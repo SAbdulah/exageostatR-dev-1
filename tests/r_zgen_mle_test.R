@@ -1,16 +1,6 @@
-#install.packages(repos=NULL, "RhpcBLASctl_0.15-148.tar.gz")
-#install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
 library("exageostat")
-#library("RhpcBLASctl")
-#To use all system cores
-#ncores=get_num_cores()-1
 
-ncores=1
-
-#RhpcBLASctl function call
-#blas_get_num_procs()
-#blas_set_num_threads(1)
-#omp_set_num_threads(1)
+ncores=2
 	
 #Inputs
 theta1 = 1
