@@ -1,5 +1,6 @@
 
 
+err=0
 
 # check submodules
 #git submodule update --init
@@ -15,7 +16,7 @@ else
     echo "StarPU NOT FOUND"
     echo "Please download it from: http://starpu.gforge.inria.fr/files/"
     echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
+    err=1
 fi
 
 if pkg-config --exists chameleon
@@ -26,7 +27,7 @@ else
     echo "CHAMELEON NOT FOUND"
     echo "Please download it from: https://gitlab.inria.fr/solverstack/chameleon.git"
     echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
+    err=1
 fi
 
 if pkg-config --exists nlopt
@@ -37,7 +38,12 @@ else
     echo "nlopt NOT FOUND"
     echo "Please download it from: http://starpu.gforge.inria.fr/files/"
     echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
+    err=1
+fi
+
+if [ $err -gt 0 ]
+then
+    exit 1
 fi
 
 rm -rf CMakeFiles CMakeCache.txt
