@@ -1,0 +1,56 @@
+
+
+set -x
+
+# check submodules
+git submodule update --init
+
+
+# check dependencies
+if pkg-config --exists libstarpu
+then
+    _LOCATION=`pkg-config --variable=prefix libstarpu`
+    echo "StarPU FOUND in [$_LOCATION]"
+else
+    echo "StarPU NOT FOUND"
+    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
+    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+    exit 1;
+fi
+
+if pkg-config --exists chameleon
+then
+    _LOCATION=`pkg-config --variable=prefix chameleon`
+    echo "CHAMELEON FOUND in [$_LOCATION]"
+else
+    echo "CHAMELEON NOT FOUND"
+    echo "Please download it from: https://gitlab.inria.fr/solverstack/chameleon.git"
+    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+    exit 1;
+fi
+
+if pkg-config --exists nlopt
+then
+    _LOCATION=`pkg-config --variable=prefix nlopt`
+    echo "nlopt FOUND in [$_LOCATION]"
+else
+    echo "nlopt NOT FOUND"
+    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
+    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+    exit 1;
+fi
+
+rm -rf CMakeFiles CMakeCache.txt
+
+cmake ./src -DBUILD_SHARED_LIBS=ON
+
+
+cat > src/Makefile << EOF
+.PHONY: all clean
+all:
+	(cd .. && make && cp ./lib*.so ./src/exageostat.so)
+
+EOF
+
+
+set +x
