@@ -90,7 +90,7 @@ make -j install
 NLOPTROOT=$PWD
 export PKG_CONFIG_PATH=$NLOPTROOT/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH
 
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	export LD_LIBRARY_PATH=$NLOPTROOT/nlopt_install/lib:$LD_LIBRARY_PATH
 else
@@ -109,7 +109,7 @@ make -j
 make -j install
 GSLROOT=$PWD
 export PKG_CONFIG_PATH=$GSLROOT/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	export LD_LIBRARY_PATH=$GSLROOT/gsl_install/lib:$LD_LIBRARY_PATH
 else
@@ -143,7 +143,7 @@ make -j
 make -j install
 HWLOCROOT=$PWD
 export PKG_CONFIG_PATH=$HWLOCROOT/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	export LD_LIBRARY_PATH=$HWLOCROOT/hwloc_install/lib:$LD_LIBRARY_PATH
 else
@@ -163,7 +163,7 @@ make -j  install
 STARPUROOT=$PWD
 export PKG_CONFIG_PATH=$STARPUROOT/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH
 
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	export LD_LIBRARY_PATH=$STARPUROOT/starpu_install/lib:$LD_LIBRARY_PATH
 else
@@ -192,7 +192,7 @@ make
 make install
 CHAMELEONROOT=$PWD
 export PKG_CONFIG_PATH=$CHAMELEONROOT/installdir/lib/pkgconfig:$PKG_CONFIG_PATH
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	export LD_LIBRARY_PATH=$CHAMELEONROOT/installdir/lib:$LD_LIBRARY_PATH
 else
@@ -208,7 +208,7 @@ echo 'export LD_PRELOAD='$MKL_DIR'/lib/intel64/libmkl_core.so:'$MKL_DIR'/lib/int
 
 #NLOPT
 echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/nlopt_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 else
@@ -216,7 +216,7 @@ else
 fi
 #GSL
 echo 'export PKG_CONFIG_PATH='$GSLROOT'/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	echo 'export LD_LIBRARY_PATH='$GSLROOT'/gsl_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 else
@@ -224,7 +224,7 @@ else
 fi
 #hwloc
 echo 'export PKG_CONFIG_PATH='$HWLOCROOT'/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	echo 'export LD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 else
@@ -232,7 +232,7 @@ else
 fi
 #starpu
 echo 'export PKG_CONFIG_PATH='$STARPUROOT'/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	echo 'export LD_LIBRARY_PATH='$STARPUROOT'/starpu_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 else
@@ -240,7 +240,7 @@ else
 fi
 #CHAMELEON
 echo 'export PKG_CONFIG_PATH='$CHAMELEONROOT'/installdir/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-if [ $CURRENT_OS -e "LINUX" ]
+if [ $CURRENT_OS == "LINUX" ]
 then
 	echo 'export LD_LIBRARY_PATH='$CHAMELEONROOT'/installdir/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 else
