@@ -6,10 +6,10 @@ vers <- paste("R package version", meta$Version)
 citEntry(entry="Manual",
          title = "ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems",
          author = personList(as.person("Sameh Abdulah"), as.person("Hatem Ltaief"), as.person("Ying Sun"), as.person("Marc G. Genton"), as.person("David E. Keyes")),
-         year = 2017,
-         note = ,
+         year = year,
+         note = vers,
          textVersion =
            paste("Sameh Abdulah, Hatem Ltaief, Ying Sun, Marc G. Genton, and David E. Keyes (",
-                 2017,
+                 year,
                  "). ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems.",
-                 vers, "", sep=""))
+                 vers, ".", sep=""))
