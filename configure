@@ -1,10 +1,9 @@
 
 
-set -x
 
 # check submodules
 #git submodule update --init
-git clone https://github.com/ecrc/exageostat src
+git clone --recurse-submodules --branch v0.1.0 https://github.com/ecrc/exageostat src
 
 
 # check dependencies
@@ -53,5 +52,3 @@ all:
 
 EOF
 
-
-set +x
