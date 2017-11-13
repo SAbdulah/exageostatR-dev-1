@@ -26,7 +26,10 @@ install_git(url="https://github.com/ecrc/exageostatR")
 library(exageostat)
 ```
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0719936468104c656d52f4b88619a75c43ce0c8a
 Possibilities of ExaGeoStat
 ===========================
 
@@ -34,8 +37,9 @@ Operations:
 
 1. Generate synthetic spatial datasets (i.e., locations & environmental measurements).
 2. Maximum likelihood operation using dense matrices.
-Backends:
 
+Backends:
+========
 CHAMELEON & STARPU
 
 Tutorial
