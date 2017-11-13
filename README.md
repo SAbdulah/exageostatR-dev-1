@@ -22,7 +22,7 @@ An Easy linux-based installation of the above packages is available by using  bu
 ```r
 install.packages("devtools")
 library(devtools)
-install_git(url="https://sabdulah:eslam580899@github.com/ecrc/exageostatR")
+install_git(url="https://github.com/ecrc/exageostatR")
 library(exageostat)
 ```
 
