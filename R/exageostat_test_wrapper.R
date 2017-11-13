@@ -36,7 +36,6 @@ browser()
 }
 rexageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
 {
-print(globalveclen)
 globalvec= vector (mode="numeric", length = globalveclen)
 globalvec2 = .C("rexageostat_gen_z",
 		as.integer(n),

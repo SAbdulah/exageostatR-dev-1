@@ -15,33 +15,26 @@ Getting Started
 4. StarPU : a runtime system.
 5. Chameleon : a dense linear algebra software.
 
-Easy installation of the above packages is available by using install_cpu.sh
-
-#### git clone exageostatR repo
-git clone https://github.com/ecrc/exageostatR.git
-
-#### Update submodules
-1. git submodule init
-2. git submodule update
+An Easy linux-based installation of the above packages is available by using  build-deps-linux.sh
 
 
-#### Build R package
-1. mv ./r-wrappers ./src
-2. mv ./examples ./src
-3. mv ./src/Makefile-shlib  ./src/Makefile
-4. R CMD check exageostatR
-5. R CMD BUILD exageostatR
+#### Install latest ExaGeoStatR version hosted on GitHub
+```r
+install.packages("devtools", dependencies=TRUE)
+library(devtools)
+install_github("ecrc/exageostatr-dev")
+library("exageostat")
+```
 
-#### Use ExaGeoStatR
+
+#### Install latest nstall.packages("devtools")stable version from CRAN (still under check by CRAN)
 ``` r
-install.packages(repos=NULL, "exageostatR_0.1.0.tar.gz")
-library("exageostatR")
+install.packages("exageostat", dependencies=TRUE)
+library("exageostat")
 ```
 
 Possibilities of ExaGeoStat
 ===========================
-
-This project is WIP, only a few things are working right now.
 
 Operations:
 
@@ -59,7 +52,6 @@ A more detailed description could be accessible [here](https://github.com/ecrc/e
 For example, to search for data scientist jobs in London:
 ```r
 library("exageostat")
-library("RhpcBLASctl")
 #Inputs
 theta1 = 1       # initial variance
 theta2 = 0.1     # initial smothness
