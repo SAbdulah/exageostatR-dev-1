@@ -1,7 +1,7 @@
 ExaGeoStatR
 ===========
 
-`exageostatR` is an R package for ExaGeoStat framework: a parallel high performance unified framework for geostatistics on manycore systems
+`exageostat-R` is an R-Wrapper for [ExaGeoStat framework]((https://github.com/ecrc/exageostat)) a parallel high performance unified framework for geostatistics on manycore systems
 
 Getting Started
 ===============
@@ -15,23 +15,17 @@ Getting Started
 4. StarPU : a runtime system.
 5. Chameleon : a dense linear algebra software.
 
-An Easy linux-based installation of the above packages is available by using  build-deps-linux.sh
+An Easy linux-based installation of the above packages is available by using  build-deps.sh
 
 
 #### Install latest ExaGeoStatR version hosted on GitHub
 ```r
-install.packages("devtools", dependencies=TRUE)
+install.packages("devtools")
 library(devtools)
-install_github("ecrc/exageostatr-dev")
-library("exageostat")
+install_git(url="https://sabdulah:eslam580899@github.com/ecrc/exageostatR")
+library(exageostat)
 ```
 
-
-#### Install latest nstall.packages("devtools")stable version from CRAN (still under check by CRAN)
-``` r
-install.packages("exageostat", dependencies=TRUE)
-library("exageostat")
-```
 
 Possibilities of ExaGeoStat
 ===========================
