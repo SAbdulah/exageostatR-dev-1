@@ -1,5 +1,5 @@
 ExaGeoStat-R
-===========
+============
 
 `ExaGeoStat-R` is an R-Wrapper for [ExaGeoStat framework]((https://github.com/ecrc/exageostat)), a parallel high performance unified framework for geostatistics on manycore systems.
 
@@ -15,11 +15,7 @@ Getting Started
 4. [StarPU](http://starpu.gforge.inria.fr/).
 5. [Chameleon](https://project.inria.fr/chameleon/).
 
-<<<<<<< HEAD
-An Easy linux-based installation of the above packages is available by using  build-deps.sh
-=======
 An easy installation of the above packages is available by using [build-deps.sh](https://github.com/ecrc/exageostatR/blob/master/install_deps.sh)
->>>>>>> 5476e26fc781b45ec1a0a328189cafdb65914795
 
 
 #### Install latest ExaGeoStat-R version hosted on GitHub
@@ -30,21 +26,14 @@ install_git(url="https://github.com/ecrc/exageostatR")
 library(exageostat)
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> 0719936468104c656d52f4b88619a75c43ce0c8a
-Possibilities of ExaGeoStat
-=======
 Possibilities of ExaGeoStat-R
->>>>>>> 5476e26fc781b45ec1a0a328189cafdb65914795
-===========================
+
 
 Operations:
 
 1. Generate synthetic spatial datasets (i.e., locations & environmental measurements).
-2. Maximum likelihood operation using dense matrices.
+2. Maximum likelihood evaluation using dense matrices.
 
 
 Tutorial
@@ -73,7 +62,7 @@ theta_out = vector(mode="numeric",length = 3)    # parameter vector output
 clb=as.numeric(c("0.01","0.01","0.01"))
 globalveclen =  3*n
 cub=as.numeric(c("5","5","5"))
-vecs_out = vector(mode="numeric",length = globalveclen)     #Z measurments of n locations
+vecs_out = vector(mode="numeric",length = globalveclen)     #Z measurements of n locations
 vecs_out[1:globalveclen] = -1.99
 theta_out[1:3]= -1.99
 

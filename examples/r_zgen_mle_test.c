@@ -1,10 +1,16 @@
 /**
  *
+ * Copyright (c) 2017, King Abdullah University of Science and Technology
+ * All rights reserved.
+ *
+ **/
+
+/**
+ *
  * @file Main.c
  *
  *
- *  MLE is a software package provided by KAUST,
- *  King Abdullah University of Science and Technology - ECRC
+ *  MLE is a software package provided by KAUST.
  *
  * @version 1.0.0
  * @author Sameh Abdulah
