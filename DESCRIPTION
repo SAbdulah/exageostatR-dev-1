@@ -1,5 +1,5 @@
 Package: exageostat
-SystemRequirements: GNU make
+SystemRequirements: GNU make, libstarpu, libchameleon, libnlopt, libgsl, libmkl_intel_lp64, libmkl_sequential, libmkl_core, libpthread 
 Version: 0.1.0
 Date: 2017-10-10
 Title: R package demonstrates the R / C Language interface for exageostat

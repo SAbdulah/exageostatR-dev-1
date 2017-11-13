@@ -1,57 +1,365 @@
 
-
-set -x
-
 # check submodules
 #git submodule update --init
-git clone https://github.com/ecrc/exageostat src
+#git clone https://github.com/ecrc/exageostat src
 
 
-# check dependencies
-if pkg-config --exists libstarpu
-then
-    _LOCATION=`pkg-config --variable=prefix libstarpu`
-    echo "StarPU FOUND in [$_LOCATION]"
+#export installation path
+
+##############################################################Sameh
+######MKL
+echo 'mklroot'=$MKLROOT
+if [ -d "$MKLROOT" ]; then
+echo "mkl_dir directory exists!"
+        echo "Great..."
 else
-    echo "StarPU NOT FOUND"
-    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
-    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
+        echo "MKL Directory does not exist!"
+        echo $MKL_DIR
+        exit 1
 fi
+#export MKLROOT=$MKL_DIR
+. $MKLROOT/bin/mklvars.sh intel64
 
-if pkg-config --exists chameleon
-then
-    _LOCATION=`pkg-config --variable=prefix chameleon`
-    echo "CHAMELEON FOUND in [$_LOCATION]"
-else
-    echo "CHAMELEON NOT FOUND"
-    echo "Please download it from: https://gitlab.inria.fr/solverstack/chameleon.git"
-    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
-fi
+#***************************************************************************** clean bashrc from previous installation
+sed -i '/## EXAGEOSTAT-INSTALLATION-BEGIN/,/## EXAGEOSTAT-INSTALLATION-END/d'  ~/.bashrc
+############################## Check OS
+echo "Finding the current os type"
+echo
+osType=$(uname)
+case "$osType" in
+    "Darwin")
+    {
+      echo "Running on Mac OSX."
+      CURRENT_OS="OSX"
+    } ;;
+    "Linux")
+    {
+      echo "Running on LINUX."
+      CURRENT_OS="LINUX"
+    } ;;
+       *)
+       {
+         echo "Unsupported OS, exiting"
+         exit
+       } ;;
 
+esac
+#################################################
+export EXAGEOSTATDEVDIR=$PWD
+[[ -d dependencies ]] || mkdir dependencies
+cd dependencies
+SETUP_DIR=$PWD
+echo $SETUP_DIR
+#exit 1
+#############################################################
+##################################NLOPT
 if pkg-config --exists nlopt
 then
-    _LOCATION=`pkg-config --variable=prefix nlopt`
-    echo "nlopt FOUND in [$_LOCATION]"
+	_LOCATION=`pkg-config --variable=prefix nlopt`
+	echo "NLOPT FOUND in [$_LOCATION]"
 else
-    echo "nlopt NOT FOUND"
-    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
-    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
-    exit 1;
+	echo "NLOPT NOT FOUND"
+#	read -p "Do you need me to install it for you? " -n 1 -r
+#	echo    # (optional) move to a new line
+#	if [[ $REPLY =~ ^[Yy]$ ]]
+#	then
+		# do dangerous stuff
+		cd $SETUP_DIR
+		if [ ! -d "nlopt-2.4.2" ]; then
+		wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
+		tar -zxvf nlopt-2.4.2.tar.gz
+		fi
+		cd nlopt-2.4.2
+		[[ -d nlopt_install ]] ||	mkdir nlopt_install
+		CC=gcc ./configure --prefix=$PWD/nlopt_install/ --enable-shared --without-guile
+		make -j
+		make -j install
+		NLOPTROOT=$PWD
+		export PKG_CONFIG_PATH=$NLOPTROOT/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH
+		if test "$CURRENT_OS" = "LINUX" 
+		then
+			export LD_LIBRARY_PATH=$NLOPTROOT/nlopt_install/lib:$LD_LIBRARY_PATH
+		else
+		       export  DYLD_LIBRARY_PATH=$NLOPTROOT/nlopt_install/lib:$DYLD_LIBRARY_PATH
+		fi
+
+#echo 'CFLAGS="'${NLOPTROOT}'/nlopt_install/include" CMD config CFLAGS' >> ./exaageostatR-dev/src/Makevars.in
+
+#pkg-config --list-all | sort
+
+#pkgconfigpath = 'PKG_CONFIG_PATH='$NLOPTROOT'/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH'
+#CFLAGS=`"$NLOPTROOT/nlopt_install/include/" CMD config CFLAGS`
+
+#exit 1
+
+#pkg-config --cflags nlopt
+
+#exit 1
+#pkg-config  --cflags nlopt
+#pkg-config --libs  nlopt
+#pkg-config --list-all | sort
+
+#exit 1
+#	else
+#		echo "Please download it from: https://nlopt.readthedocs.io/en/latest/#download-and-installation"
+#		echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+#		exit 1;
+#	fi
 fi
 
-rm -rf CMakeFiles CMakeCache.txt
+##################################NGSL
+if pkg-config --exists gsl
+then
+        _LOCATION=`pkg-config --variable=prefix gsl`
+        echo "GSL FOUND in [$_LOCATION]"
+else
+        echo "GSL NOT FOUND"
+       # read -p "Do you need me to install it for you? " -n 1 -r
+       # echo    # (optional) move to a new line
+       # if [[ $REPLY =~ ^[Yy]$ ]]
+       # then
+		cd $SETUP_DIR
+		if [ ! -d "gsl-2.4" ]; then
+		        wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
+        		tar -zxvf gsl-2.4.tar.gz
+		fi
+		cd gsl-2.4
+		[[ -d gsl_install ]] || mkdir gsl_install
+		CC=gcc ./configure --prefix=$PWD/gsl_install/
+		make -j
+		make -j install
+		GSLROOT=$PWD
+		export PKG_CONFIG_PATH=$GSLROOT/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH
+                if test "$CURRENT_OS" = "LINUX"
+		then
+			export LD_LIBRARY_PATH=$GSLROOT/gsl_install/lib:$LD_LIBRARY_PATH
+		else
+        		export DYLD_LIBRARY_PATH=$GSLROOT/gsl_install/lib:$DYLD_LIBRARY_PATH
+		fi 
+#	#else
+        #        echo "Please download it from: ftp://ftp.gnu.org/gnu/gsl/"
+        #        echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+        #        exit 1;
+        #fi
+fi
 
-cmake ./src -DBUILD_SHARED_LIBS=ON
+##################################HWLOC
+if pkg-config --exists hwloc
+then
+        _LOCATION=`pkg-config --variable=prefix hwloc`
+        echo "hwloc FOUND in [$_LOCATION]"
+else
+        echo "hwloc NOT FOUND"
+        #read -p "Do you need me to install it for you? " -n 1 -r
+        #echo    # (optional) move to a new line
+        #if [[ $REPLY =~ ^[Yy]$ ]]
+        #then
+		cd $SETUP_DIR
+		if [  ! -d "hwloc-1.11.5" ]; then
+		        wget https://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-1.11.5.tar.gz
+        		tar -zxvf hwloc-1.11.5.tar.gz
+		fi
+		cd hwloc-1.11.5
+		[[ -d hwloc_install ]] || mkdir hwloc_install
+		CC=gcc ./configure --prefix=$SETUP_DIR/hwloc-1.11.5/hwloc_install
+		make -j
+		make -j install
+		HWLOCROOT=$PWD
+		export PKG_CONFIG_PATH=$HWLOCROOT/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH
+ #               if test "$CURRENT_OS" = "LINUX"
+#		then
+#			export LD_LIBRARY_PATH=$HWLOCROOT/hwloc_install/lib:$LD_LIBRARY_PATH
+#		else
+#		        export DYLD_LIBRARY_PATH=$HWLOCROOT/hwloc_install/lib:$DYLD_LIBRARY_PATH
+#		fi 
+        #else
+        #        echo "Please download it from: https://www.open-mpi.org/projects/hwloc/"
+        #        echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+        #        exit 1;
+        #fi
+fi
+
+##################################STARPU
+if pkg-config --exists libstarpu
+then
+        _LOCATION=`pkg-config --variable=prefix libstarpu`
+        echo "starpu FOUND in [$_LOCATION]"
+else
+        echo "starpu NOT FOUND"
+        #read -p "Do you need me to install it for you? " -n 1 -r
+        #echo    # (optional) move to a new line
+        #if [[ $REPLY =~ ^[Yy]$ ]]
+        #then
+		cd $SETUP_DIR
+		if [ ! -d "starpu-1.2.1" ]; then
+		        wget http://starpu.gforge.inria.fr/files/starpu-1.2.1/starpu-1.2.1.tar.gz
+		        tar -zxvf starpu-1.2.1.tar.gz
+		fi
+		cd starpu-1.2.1
+		[[ -d starpu_install ]] || mkdir starpu_install
+		./configure --prefix=$SETUP_DIR/starpu-1.2.1/starpu_install  -disable-cuda -disable-mpi --disable-opencl
+		make -j
+		make -j  install
+		STARPUROOT=$PWD
+		export PKG_CONFIG_PATH=$STARPUROOT/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH
+#                if test "$CURRENT_OS" = "LINUX"
+#		then
+#			export LD_LIBRARY_PATH=$STARPUROOT/starpu_install/lib:$LD_LIBRARY_PATH
+#		else
+#			export DYLD_LIBRARY_PATH=$STARPUROOT/starpu_install/lib:$DYLD_LIBRARY_PATH
+#		fi	
+        #else
+         #       echo "Please download it from: http://starpu.gforge.inria.fr/files/"
+         #       echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+         #       exit 1;
+        #fi
+fi
+##################################CHAMELEON
+if pkg-config --exists chameleon
+then
+        _LOCATION=`pkg-config --variable=prefix chameleon`
+        echo "chameleon FOUND in [$_LOCATION]"
+else
+        echo "chameleon NOT FOUND"
+    #    read -p "Do you need me to install it for you? " -n 1 -r
+     #   echo    # (optional) move to a new line
+        #if [[ $REPLY =~ ^[Yy]$ ]]
+        #then
+        	cd $SETUP_DIR
+		# Check if we are already in exageostat repo dir or not.
+		if git -C $PWD remote -v | grep -q 'https://gitlab.inria.fr/solverstack/chameleon.git'
+		then
+		        # we are, lets go to the top dir (where .git is)
+		        until test -d $PWD/.git ;
+	        do
+        	        cd ..
+	        done;
+		else
+			git clone https://gitlab.inria.fr/solverstack/chameleon.git
+		        cd chameleon
+		fi
+		git submodule init
+		git submodule update
+		mkdir -p build/installdir
+		cd build
+		CC=gcc cmake .. -DCMAKE_BUILD_TYPE=Debug -DCHAMELEON_USE_MPI=OFF -DCMAKE_INSTALL_PREFIX=$PWD/installdir -DBUILD_SHARED_LIBS=ON
+		make
+		make install
+		CHAMELEONROOT=$PWD
+		export PKG_CONFIG_PATH=$CHAMELEONROOT/installdir/lib/pkgconfig:$PKG_CONFIG_PATH
+#                if test "$CURRENT_OS" = "LINUX"
+#		then
+#			export LD_LIBRARY_PATH=$CHAMELEONROOT/installdir/lib:$LD_LIBRARY_PATH
+#		else
+#		        export DYLD_LIBRARY_PATH=$CHAMELEONROOT/installdir/lib:$DYLD_LIBRARY_PATH
+#		fi	
+	#else
+               # echo "Please download it from:  https://gitlab.inria.fr/solverstack/chameleon.git"
+               # echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+               # exit 1;
+        #fi
+fi
+
+# check dependencies
+#if pkg-config --exists libstarpu
+#then
+#    _LOCATION=`pkg-config --variable=prefix libstarpu`
+#    echo "StarPU FOUND in [$_LOCATION]"
+#else
+#    echo "StarPU NOT FOUND"
+#    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
+#    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+#    exit 1;
+#fi
+
+#if pkg-config --exists chameleon
+#then
+#    _LOCATION=`pkg-config --variable=prefix chameleon`
+#    echo "CHAMELEON FOUND in [$_LOCATION]"
+#else
+#    echo "CHAMELEON NOT FOUND"
+#    echo "Please download it from: https://gitlab.inria.fr/solverstack/chameleon.git"
+#    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+#    exit 1;
+#fi
+
+#if pkg-config --exists nlopt
+#then
+#    _LOCATION=`pkg-config --variable=prefix nlopt`
+#    echo "nlopt FOUND in [$_LOCATION]"
+#else
+#    echo "nlopt NOT FOUND"
+#    echo "Please download it from: http://starpu.gforge.inria.fr/files/"
+#    echo "After installing it, set the proper PKG_CONFIG_PATH variable"
+#    exit 1;
+#fi
+
+#rm -rf CMakeFiles CMakeCache.txt
+
+#cmake ./src -DBUILD_SHARED_LIBS=ON
 
 
-cat > src/Makefile << EOF
-.PHONY: all clean
-all:
-	(cd .. && make && cp ./lib*.so ./src/exageostat.so)
+#cat > src/Makefile << EOF
+#.PHONY: all clean
+#all:
+#	(cd .. && make && cp ./lib*.so ./src/exageostat.so)
 
-EOF
+#EOF
 
 
-set +x
+pkg-config --list-all | sort
+
+#***************************************************************************** edit bashrc file
+echo '## EXAGEOSTAT-INSTALLATION-BEGIN' >> ~/.bashrc
+#*****************************************************************************source intel MKL
+#MKL
+echo '. '$MKLROOT'/bin/mklvars.sh intel64' >> ~/.bashrc
+#echo 'export MKLROOT='$MKL_DIR >> ~/.bashrc
+echo 'export LD_PRELOAD='$MKLROOT'/lib/intel64/libmkl_core.so:'$MKLROOT'/lib/intel64/libmkl_sequential.so' >> ~/.bashrc
+
+#NLOPT
+echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+if test "$CURRENT_OS" = "LINUX"
+then
+    echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/nlopt_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+else
+        echo 'export DYLD_LIBRARY_PATH='$NLOPTROOT'/nlopt_install/lib:$DYLD_LIBRARY_PATH' >> ~/.bashrc
+fi
+#GSL
+echo 'export PKG_CONFIG_PATH='$GSLROOT'/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+if test "$CURRENT_OS" = "LINUX"
+then
+    echo 'export LD_LIBRARY_PATH='$GSLROOT'/gsl_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+else
+        echo 'export DYLD_LIBRARY_PATH='$GSLROOT'/gsl_install/lib:$DYLD_LIBRARY_PATH' >> ~/.bashrc
+fi
+#hwloc
+echo 'export PKG_CONFIG_PATH='$HWLOCROOT'/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+if test "$CURRENT_OS" = "LINUX"
+then
+    echo 'export LD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+else
+        echo 'export DYLD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$DYLD_LIBRARY_PATH' >> ~/.bashrc
+fi
+#starpu
+echo 'export PKG_CONFIG_PATH='$STARPUROOT'/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+if test "$CURRENT_OS" = "LINUX"
+then
+    echo 'export LD_LIBRARY_PATH='$STARPUROOT'/starpu_install/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+else
+        echo 'export DYLD_LIBRARY_PATH='$STARPUROOT'/starpu_install/lib:$DYLD_LIBRARY_PATH' >> ~/.bashrc
+fi
+#CHAMELEON
+echo 'export PKG_CONFIG_PATH='$CHAMELEONROOT'/installdir/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+if test "$CURRENT_OS" = "LINUX"
+then
+    echo 'export LD_LIBRARY_PATH='$CHAMELEONROOT'/installdir/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+else
+        echo 'export DYLD_LIBRARY_PATH='$CHAMELEONROOT'/installdir/lib:$DYLD_LIBRARY_PATH' >> ~/.bashrc
+fi
+#end
+echo '## EXAGEOSTAT-INSTALLATION-END' >> ~/.bashrc
+
+echo '========================'
+#sh  ~/.bashrc
+echo '========================'
