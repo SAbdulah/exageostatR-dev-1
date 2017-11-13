@@ -1,7 +1,7 @@
 ExaGeoStatR
 ===========
 
-`exageostat-R` is an R-Wrapper for [ExaGeoStat framework]((https://github.com/ecrc/exageostat)) a parallel high performance unified framework for geostatistics on manycore systems
+`ExaGeoStat-R` is an R-Wrapper for [ExaGeoStat framework]((https://github.com/ecrc/exageostat)) a parallel high performance unified framework for geostatistics on manycore systems
 
 Getting Started
 ===============
