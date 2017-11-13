@@ -66,8 +66,14 @@ cub=as.numeric(c("5","5","5"))
 vecs_out = vector(mode="numeric",length = globalveclen)     #Z measurments of n locations
 vecs_out[1:globalveclen] = -1.99
 theta_out[1:3]= -1.99
+
+rexageostat_initR(ncores, gpus, ts)
+
 #Generate Z observation vector
 vecs_out = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+
 #Estimate MLE parameters
 theta_out = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+
+rexageostat_finalizeR()
 ```
