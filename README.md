@@ -69,8 +69,8 @@ cub		= vector(mode="numeric",length = 3)	#Optimization function upper bounds val
 theta_out 	= vector(mode="numeric",length = 3)   	#Parameter vector output.
 globalveclen 	= 3*n
 vecs_out 	= vector(mode="numeric",length = globalveclen)     #Z measurements of n locations
-clb=as.numeric(c("0.01", "0.01", "0.01"))
-cub=as.numeric(c("5.00", "5.00", "5.00"))
+clb		= as.numeric(c("0.01", "0.01", "0.01"))
+cub		= as.numeric(c("5.00", "5.00", "5.00"))
 vecs_out[1:globalveclen]	= -1.99
 theta_out[1:3]			= -1.99
 #Initiate exageostat instance
