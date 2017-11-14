@@ -29,8 +29,8 @@ library(exageostat)
 
 #### Get the latest ExaGeoStat-R release  hosted on GitHub
 
-1- Download exageostat_0.1.0.tar.gz from release
-2- Use R to install exageostat_0.1.0.tar.gz
+1. Download exageostat_0.1.0.tar.gz from release
+2. Use R to install exageostat_0.1.0.tar.gz
 ```r
 install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
 library(exageostat)
