@@ -6,9 +6,9 @@ ExaGeoStat-R
 Getting Started
 ===============
 
-### Install
+### Installation
 
-#### install dependencies
+#### Software dependencies
 1. [Portable Hardware Locality (hwloc)](https://www.open-mpi.org/projects/hwloc/).
 2. [NLopt](https://nlopt.readthedocs.io/en/latest/).
 3. [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/doc/html/index.html).
@@ -37,20 +37,20 @@ library(exageostat)
 ```
 
 
-Possibilities of ExaGeoStat-R
-=============================
+Features of ExaGeoStat-R
+========================
 Operations:
 
 1. Generate synthetic spatial datasets (i.e., locations & environmental measurements).
 2. Maximum likelihood evaluation using dense matrices.
 
 
-Tutorial
-========
+More information
+================
 
-A more detailed description could be accessible [here](https://github.com/ecrc/exageostat)
+A more detailed description of the underlying ExaGeoStat software package can be found. [here](https://github.com/ecrc/exageostat)
 
-R Example:
+R Example
 ================
 ```r
 library("exageostat")					#Load ExaGeoStat-R lib.
@@ -74,12 +74,12 @@ clb		= as.numeric(c("0.01", "0.01", "0.01"))
 cub		= as.numeric(c("5.00", "5.00", "5.00"))
 vecs_out[1:globalveclen]	= -1.99
 theta_out[1:3]			= -1.99
-#Initiate exageostat instance
+#Initiate ExaGeoStat instance
 rexageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
 vecs_out	= rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
 #Estimate MLE parameters
 theta_out	= rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
-#finalize exageostat instance
+#finalize ExaGeoStat instance
 rexageostat_finalizeR()
 ```
