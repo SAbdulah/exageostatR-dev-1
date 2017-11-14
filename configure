@@ -66,7 +66,6 @@ cmake ./src -DBUILD_SHARED_LIBS=ON
 cat > src/Makefile << EOF
 .PHONY: all clean
 all:
-	(cd .. && make && cp ./lib*.so ./src/exageostat.so)
+    (cd .. && make && cp ./lib*.so ./src/exageostat.so)
 
 EOF
-
