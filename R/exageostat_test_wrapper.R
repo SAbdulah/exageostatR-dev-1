@@ -51,7 +51,7 @@ TestWrapper <- function()
 	browser()
 }
 
-rexageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+exageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
 {
 	globalvec= vector (mode="numeric", length = globalveclen)
 	globalvec2 = .C("rexageostat_gen_z",
@@ -75,7 +75,7 @@ rexageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, thet
 }
 
 
-rexageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, computation, dmetric)
+exageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, computation, dmetric)
 {
 	theta_out2= .C("rexageostat_likelihood",
 	                as.integer(n),
@@ -102,7 +102,7 @@ rexageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z
 	return(theta_out)
 }
 
-rexageostat_initR <- function(ncores, gpus, ts)
+exageostat_initR <- function(ncores, gpus, ts)
 {
 	#install.packages(repos="https://cran.r-project.org", "RhpcBLASctl")
         library(RhpcBLASctl)
@@ -116,7 +116,7 @@ rexageostat_initR <- function(ncores, gpus, ts)
 	print("back from exageostat_init C function call. Hit key....")
 }
 
-rexageostat_finalizeR <- function()
+exageostat_finalizeR <- function()
 {
 	.C("rexageostat_finalize")
 	print("back from exageostat_finalize C function call. Hit key....")

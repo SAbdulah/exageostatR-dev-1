@@ -36,8 +36,8 @@ cub             = as.numeric(c("5.00", "5.00", "5.00"))
 vecs_out[1:globalveclen]        = -1.99
 theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
-rexageostat_initR(ncores, gpus, ts)
+exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
-vecs_out        = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+vecs_out        = exageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
 #finalize exageostat instance
-rexageostat_finalizeR()
+exageostat_finalizeR()
