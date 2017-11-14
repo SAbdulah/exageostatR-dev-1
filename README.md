@@ -53,13 +53,14 @@ A more detailed description could be accessible [here](https://github.com/ecrc/e
 R Example:
 ================
 ```r
-library("exageostat")					#Load ExaGEoStat-R lib.
+library("exageostat")					#Load ExaGeoStat-R lib.
 theta1		= 1					#Initial variance.
 theta2 		= 0.1					#Initial smoothness.
 theta3 		= 0.5   				#Initial range.
 computation 	= 0					#0 --> exact computation, 1--> LR approx. computation.
-dmetric 	= 0					#0 --> Euclidian distance, 1--> great circle distance.
+dmetric 	= 0					#0 --> Euclidean distance, 1--> great circle distance.
 n		= 1600         				#n*n locations grid.
+ncores          = 2                                     #Number of underlying CPUs.
 gpus		= 0    					#Number of underlying GPUs.
 ts		= 320					#Tile_size:  changing it can improve the performance. No fixed value can be given.
 p_grid		= 1					#More than 1 in the case of distributed systems 
