@@ -9,7 +9,7 @@ citEntry(entry="Manual",
          year = year,
          note = vers,
          textVersion =
-           paste("Sameh Abdulah, Hatem Ltaief, Ying Sun, Marc G. Genton, and David E. Keyes (",
-                 year,
-                 "). ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems.",
-                 vers, ".", sep=""))
+         paste("Sameh Abdulah, Hatem Ltaief, Ying Sun, Marc G. Genton, and David E. Keyes (",
+         year,
+         "). ExaGeoStat: A High Performance Unified Framework for Geostatistics on Manycore Systems.",
+         vers, ".", sep=""))
