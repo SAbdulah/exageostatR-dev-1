@@ -1,12 +1,12 @@
-\name{exageostat_likelihoodR}
-\alias{exageostat_likelihoodR}
-\title{ Sets up the call to the rexageostat_likelihood() C language function accessed via the  R '.C' external function call API }
+\name{mle_dstR}
+\alias{mle_dstR}
+\title{ Sets up the call to the mle_dst() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{exageostat_likelihoodR} demonstrates the R / C language interface
+  \code{mle_dstR} demonstrates the R / C language interface
 }
 
 \usage{
-exageostat_likelihoodR(n,
+mle_dstR(n,
 		ncores,
 		gpus,
 		ts,
@@ -17,7 +17,7 @@ exageostat_likelihoodR(n,
 		z,
 		clb,
 		cub,
-		computation,
+		dst_thick,
 		dmetric)
 }
 
@@ -33,7 +33,7 @@ exageostat_likelihoodR(n,
   \item{ z       }{ Double vector - z observations at (x, y) }
   \item{ clb     }{ Double vector - optimizer lower bounds theta values }
   \item{ cub     }{ Double vector - optimizer upper bounds theta values }
-  \item{ computation }{ String - "exact" or "approx" }
+  \item{ dst_thick }{ Integer - Diagonal Super-Tile (DST) diagonal thick }
   \item{ dmetric     }{ String - "dm" or "gcd" }
 }
 
@@ -48,14 +48,14 @@ exageostat_likelihoodR(n,
 # inline call at R command line or in another R function:
 # Provides function arguments for and calls the R exageostat__gen_zR() function.
 #
-#exageostat_likelihood(n,
+#mle_dst(n,
 #               ncores,
 #               gpus,
 #               ts,
 #               p_grid,
 #		q_grid,
 #		theta,
-#		computation,
+#		dst_thick,
 #		dmetric)
 }
 

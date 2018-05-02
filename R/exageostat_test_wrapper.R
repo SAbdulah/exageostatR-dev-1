@@ -13,7 +13,7 @@
  # @version 0.1.0
  #
  # @author Sameh Abdulah
- # @date 2017-11-14
+ # @date 2018-05-02
  
   
 TestWrapper <- function()
@@ -42,16 +42,15 @@ TestWrapper <- function()
 	#Initiate exageostat instance
 	rexageostat_initR(ncores, gpus, ts)
 	#Generate Z observation vector
-	vecs_out        = rexageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+	vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 	#Estimate MLE parameters
-	theta_out       = rexageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+	theta_ou        = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric)
 	#finalize exageostat instance
 	rexageostat_finalizeR()
-	print("Back from exageostat_gen_z! hit key...")
 	browser()
 }
 
-exageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 {
 	globalvec= vector (mode="numeric", length = globalveclen)
 	globalvec2 = .C("rexageostat_gen_z",
@@ -64,18 +63,17 @@ exageostat_gen_zR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta
         	        as.numeric(theta1),
 			as.numeric(theta2),
 			as.numeric(theta3),
-        	        as.integer(computation),		
                 	as.integer(dmetric),
 	                as.integer(globalveclen),		
 			globalvec = numeric(globalveclen))$globalvec
 
 	globalvec[1:globalveclen] <- globalvec2[1:globalveclen]
-	print("back from exageostat_gen_z C function call. Hit key....")
+	print("back from gen_z_exact  C function call. Hit key....")
 	return(globalvec)
 }
 
 
-exageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, computation, dmetric)
+mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric)
 {
 	theta_out2= .C("rexageostat_likelihood",
 	                as.integer(n),
@@ -94,13 +92,71 @@ exageostat_likelihoodR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z,
 	                as.integer((3)),	
 			as.numeric(cub),
 	                as.integer((3)),
-			as.integer(computation),
 	                as.integer(dmetric),
 			theta_out=numeric(3))$theta_out		
 	theta_out[1:3] <- theta_out2[1:3]
-	print("back from exageostat_likelihood C function call. Hit key....")
+	print("back from mle_exact C function call. Hit key....")
 	return(theta_out)
 }
+
+mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric)
+{
+        theta_out2= .C("rexageostat_likelihood",
+                        as.integer(n),
+                        as.integer(ncores),
+                        as.integer(gpus),
+                        as.integer(ts),
+                        as.integer(p_grid),
+                        as.integer(q_grid),
+                        as.numeric(x),
+                        as.integer((n)),
+                        as.numeric(y),
+                        as.integer((n)),
+                        as.numeric(z),
+                        as.integer((n)) ,
+                        as.numeric(clb),
+                        as.integer((3)),
+                        as.numeric(cub),
+                        as.integer((3)),
+                        as.integer(tlr_acc),
+                        as.integer(tlr_maxrank),
+                        as.integer(dmetric),
+                        theta_out=numeric(3))$theta_out
+        theta_out[1:3] <- theta_out2[1:3]
+        print("back from mle_tlr C function call. Hit key....")
+        return(theta_out)
+}
+
+
+mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric)
+{
+        theta_out2= .C("rexageostat_likelihood",
+                        as.integer(n),
+                        as.integer(ncores),
+                        as.integer(gpus),
+                        as.integer(ts),
+                        as.integer(p_grid),
+                        as.integer(q_grid),
+                        as.numeric(x),
+                        as.integer((n)),
+                        as.numeric(y),
+                        as.integer((n)),
+                        as.numeric(z),
+                        as.integer((n)) ,
+                        as.numeric(clb),
+                        as.integer((3)),
+                        as.numeric(cub),
+                        as.integer((3)),
+                        as.integer(dst_thick),
+                        as.integer(dmetric),
+                        theta_out=numeric(3))$theta_out
+        theta_out[1:3] <- theta_out2[1:3]
+        print("back from mle_dst C function call. Hit key....")
+        return(theta_out)
+}
+
+
+
 
 exageostat_initR <- function(ncores, gpus, ts)
 {
