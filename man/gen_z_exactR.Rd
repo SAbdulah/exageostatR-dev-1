@@ -1,6 +1,6 @@
 \name{gen_z_exactR}
 \alias{gen_z_exactR}
-\titl{ Sets up the call to the gen_z_exact() C language function accessed via the  R '.C' external function call API }
+\title{ Sets up the call to the gen_z_exact() C language function accessed via the  R '.C' external function call API }
 \description{
   \code{gen_z_exactR} demonstrates the R / C language interface
 }
