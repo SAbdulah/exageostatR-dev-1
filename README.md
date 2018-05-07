@@ -43,7 +43,8 @@ Operations:
 
 1. Generate synthetic spatial datasets (i.e., locations & environmental measurements).
 2. Maximum likelihood evaluation using dense matrices.
-
+3. Maximum likelihood evaluation using compressed matrices based on Tile Low-Rank(TLR).
+4. Maximum likelihood evaluation using  matrices based on Diagonal Super-Tile(DST).
 
 More information
 ================
