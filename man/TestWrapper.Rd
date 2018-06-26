@@ -1,6 +1,6 @@
 \name{TestWrapper}
 \alias{TestWrapper}
-\title{ Test Wrapper Function for ExaGeoStatR interface to the CalcMatAvgR() function  }
+\title{ Test Wrapper Function for TrialSwapR interface to the CalcMatAvgR() function  }
 \description{
   \code{TestWrapper} demonstrates the R / C language interface
 }
@@ -14,7 +14,7 @@ TestWrapper()
 \value{ Returns nothing. }
 
 
-\author{ Sameh Abdulah, Postdoctoral Fellow, Extreme Computing and Research Center, KAUST \email{sameh.abdulah@kaust.edu.sa}}
+\author{ Rick Reeves,Scientific Programmer, National Center for Ecological Analysis and Synthesis, UCSB \email{reeves@nceas.ucsb.edu}}
 
 \examples{
 #
