@@ -54,21 +54,23 @@ A more detailed description of the underlying ExaGeoStat software package can be
 R Example
 ================
 ```r
-library("exageostat")					#Load ExaGeoStat-R lib.
-theta1		= 1					#Initial variance.
-theta2 		= 0.1					#Initial smoothness.
-theta3 		= 0.5   				#Initial range.
-computation 	= 0					#0 --> exact computation, 1--> LR approx. computation.
-dmetric 	= 0					#0 --> Euclidean distance, 1--> great circle distance.
-n		= 1600         				#n*n locations grid.
-ncores          = 2                                     #Number of underlying CPUs.
-gpus		= 0    					#Number of underlying GPUs.
-ts		= 320					#Tile_size:  changing it can improve the performance. No fixed value can be given.
-p_grid		= 1					#More than 1 in the case of distributed systems 
-q_grid		= 1					#More than 1 in the case of distributed systems ( usually equals to p_grid)
-clb 		= vector(mode="numeric",length = 3)  	#Optimization function lower bounds values.
-cub		= vector(mode="numeric",length = 3)	#Optimization function upper bounds values.
-theta_out 	= vector(mode="numeric",length = 3)   	#Parameter vector output.
+library("exageostat")					# Load ExaGeoStat-R lib.
+theta1		= 1					# Initial variance.
+theta2 		= 0.1					# Initial smoothness.
+theta3 		= 0.5   				# Initial range.
+computation 	= 0					# 0 --> exact computation, 1--> LR approx. computation.
+dmetric 	= 0					# 0 --> Euclidean distance, 1--> great circle distance.
+n		= 1600         				# n*n locations grid.
+ncores          = 2                                     # Number of underlying CPUs.
+gpus		= 0    					# Number of underlying GPUs.
+ts		= 320					# Tile_size:  changing it can improve the performance. No fixed value can be given.
+opt_tol		= 0.0001				# Optimization termination tolerance.
+opt_max_iters	= 20					# Optimization maximum number of iterations.
+p_grid		= 1					# More than 1 in the case of distributed systems 
+q_grid		= 1					# More than 1 in the case of distributed systems ( usually equals to p_grid)
+clb 		= vector(mode="numeric",length = 3)  	# Optimization function lower bounds values.
+cub		= vector(mode="numeric",length = 3)	# Optimization function upper bounds values.
+theta_out 	= vector(mode="numeric",length = 3)   	# Parameter vector output.
 globalveclen 	= 3*n
 vecs_out 	= vector(mode="numeric",length = globalveclen)     #Z measurements of n locations
 clb		= as.numeric(c("0.01", "0.01", "0.01"))
@@ -78,9 +80,9 @@ theta_out[1:3]			= -1.99
 #Initiate ExaGeoStat instance
 exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
-vecs_out	= exageostat_gen_zR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, computation, dmetric, globalveclen)
+vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 #Estimate MLE parameters
-theta_out	= exageostat_likelihoodR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, computation, dmetric)
+theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, opt_tol, opt_max_iters)
 #Finalize ExaGeoStat instance
 exageostat_finalizeR()
 ```
