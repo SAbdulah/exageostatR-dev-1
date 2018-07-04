@@ -116,9 +116,9 @@ Test3 <- function()
         vecs_out[1:globalveclen]        = -1.99
         theta_out[1:3]                  = -1.99
         #Initiate exageostat instance
-        exageostat_initR(ncores, gpus, dts)
+        exageostat_initR(ncores, gpus, ts)
         #Generate Z observation vector
-        vecs_out        = gen_z_exactR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
         #Estimate MLE parameters (DST approximation)
         theta_out       = mle_dstR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
         #Finalize exageostat instance
@@ -157,7 +157,7 @@ Test4 <- function()
         #Generate Z observation vector based on given locations
         vecs_out        = gen_z_givenlocs_exactR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
         #Estimate MLE parameters (Exact)
-        theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
+        theta_out       = mle_exactR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
         #Finalize exageostat instance
         exageostat_finalizeR()
         browser()
@@ -166,7 +166,7 @@ Test4 <- function()
 gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 {
 	globalvec  = vector (mode="numeric", length = globalveclen)
-	globalvec2 = .C("rexageostat_gen_z",
+	globalvec2 = .C("gen_z_exact",
 			as.integer(n),
                 	as.integer(ncores),
 	                as.integer(gpus),
@@ -189,8 +189,8 @@ gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, th
 gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
 {
         globalvec  = vector (mode="numeric", length = globalveclen)
-        globalvec2 = .C("rexageostat_gen_z_givenlocs",
-                        as.integer(n),
+        globalvec2 = .C("gen_z_givenlocs_exact",
+			as.integer(n),
                         as.integer(ncores),
                         as.integer(gpus),
                         as.integer(ts),
@@ -204,11 +204,8 @@ gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, th
                         as.numeric(theta2),
                         as.numeric(theta3),
                         as.integer(dmetric),
-                        as.numeric(opt_tol),
-                        as.integer(opt_max_iters),
                         as.integer(globalveclen),
                         globalvec = numeric(globalveclen))$globalvec
-
         globalvec[1:globalveclen] <- globalvec2[1:globalveclen]
         print("back from gen_z_givenlocs_exact  C function call. Hit key....")
         return(globalvec)
@@ -217,7 +214,7 @@ gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, th
 
 mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric, opt_tol, opt_max_iters)
 {
-	theta_out2 = .C("rexageostat_likelihood",
+	theta_out2 = .C("mle_exact",
 	                as.integer(n),
 	                as.integer(ncores),
 	                as.integer(gpus),
@@ -235,15 +232,17 @@ mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, d
 			as.numeric(cub),
 	                as.integer((3)),
 	                as.integer(dmetric),
+                        as.numeric(opt_tol),
+                        as.integer(opt_max_iters),
 			theta_out=numeric(3))$theta_out		
 	theta_out[1:3] <- theta_out2[1:3]
 	print("back from mle_exact C function call. Hit key....")
 	return(theta_out)
 }
 
-mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric)
+mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric, opt_tol, opt_max_iters)
 {
-        theta_out2 = .C("rexageostat_likelihood",
+        theta_out2 = .C("mle_tlr",
                         as.integer(n),
                         as.integer(ncores),
                         as.integer(gpus),
@@ -263,6 +262,8 @@ mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr
                         as.integer(tlr_acc),
                         as.integer(tlr_maxrank),
                         as.integer(dmetric),
+                        as.numeric(opt_tol),
+                        as.integer(opt_max_iters),
                         theta_out=numeric(3))$theta_out
         theta_out[1:3] <- theta_out2[1:3]
         print("back from mle_tlr C function call. Hit key....")
@@ -270,9 +271,9 @@ mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr
 }
 
 
-mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric)
+mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric, opt_tol, opt_max_iters)
 {
-        theta_out2 = .C("rexageostat_likelihood",
+        theta_out2 = .C("mle_dst",
                         as.integer(n),
                         as.integer(ncores),
                         as.integer(gpus),
@@ -291,6 +292,8 @@ mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst
                         as.integer((3)),
                         as.integer(dst_thick),
                         as.integer(dmetric),
+                        as.numeric(opt_tol),
+                        as.integer(opt_max_iters),
                         theta_out=numeric(3))$theta_out
         theta_out[1:3] <- theta_out2[1:3]
         print("back from mle_dst C function call. Hit key....")

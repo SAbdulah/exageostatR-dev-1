@@ -42,6 +42,6 @@ exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector based on given locations
 vecs_out        = gen_z_givenlocs_exactR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
 #Estimate MLE parameters (Exact)
-theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
+theta_out       = mle_exactR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
 #Finalize exageostat instance
 exageostat_finalizeR()
