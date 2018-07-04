@@ -13,46 +13,159 @@
  # @version 0.1.0
  #
  # @author Sameh Abdulah
- # @date 2018-05-02
+ # @date 2018-07-04
  
   
-TestWrapper <- function()
+Test1 <- function()
+# Test Generating Z vector using random (x, y) locations with exact MLE computation.
 {
-	library("exageostat")                                   #Load ExaGeoStat-R lib.
-	theta1          = 1                                     #Initial variance.
-	theta2          = 0.1                                   #Initial smoothness.
-	theta3          = 0.5                                   #Initial range.
-	computation     = 0                                     #0 --> exact computation, 1--> LR approx. computation.
-	dmetric         = 0                                     #0 --> Euclidean distance, 1--> great circle distance.
-	n               = 1600                                  #n*n locations grid.
-	ncores          = 2                                     #Number of underlying CPUs.
-	gpus            = 0                                     #Number of underlying GPUs.
-	ts              = 320                                   #Tile_size:  changing it can improve the performance. No fixed value can be given.
-	p_grid          = 1                                     #More than 1 in the case of distributed systems
-	q_grid          = 1                                     #More than 1 in the case of distributed systems ( usually equals to p_grid)
-	clb             = vector(mode="numeric",length = 3)     #Optimization function lower bounds values.
-	cub             = vector(mode="numeric",length = 3)     #Optimization function upper bounds values.
-	theta_out       = vector(mode="numeric",length = 3)     #Parameter vector output.
+	library("exageostat")						#Load ExaGeoStat-R lib.
+	theta1          = 1						#Initial variance.
+	theta2          = 0.1                                   	#Initial smoothness.
+	theta3          = 0.5                                   	#Initial range.
+	computation     = 0                                     	#0 --> exact computation, 1--> DST approx, and 2--> LR approx. computation.
+	dmetric         = 0                                     	#0 --> Euclidean distance, 1--> great circle distance.
+	n               = 1600                                 		#n*n locations grid.
+	ncores          = 2                                     	#Number of underlying CPUs.
+	gpus            = 0                                     	#Number of underlying GPUs.
+	ts              = 320                                   	#Tile_size:  changing it can improve the performance. No fixed value can be given.
+	p_grid          = 1                                     	#More than 1 in the case of distributed systems
+	q_grid          = 1                                     	#More than 1 in the case of distributed systems ( usually equals to p_grid)
+	clb             = vector(mode="numeric",length = 3)     	#Optimization function lower bounds values.
+	cub             = vector(mode="numeric",length = 3)     	#Optimization function upper bounds values.
+	theta_out       = vector(mode="numeric",length = 3)     	#Parameter vector output.
 	globalveclen    = 3*n
-	vecs_out        = vector(mode="numeric",length = globalveclen)     #Z measurements of n locations
-	clb             = as.numeric(c("0.01", "0.01", "0.01"))
-	cub             = as.numeric(c("5.00", "5.00", "5.00"))
+	vecs_out        = vector(mode="numeric",length = globalveclen)  #Z measurements of n locations
+	clb             = as.numeric(c("0.01", "0.01", "0.01"))		#Optimization lower bounds.
+	cub             = as.numeric(c("5.00", "5.00", "5.00"))		#Optimization upper bounds.
 	vecs_out[1:globalveclen]        = -1.99
 	theta_out[1:3]                  = -1.99
 	#Initiate exageostat instance
-	rexageostat_initR(ncores, gpus, ts)
+	exageostat_initR(ncores, gpus, ts)
 	#Generate Z observation vector
 	vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
-	#Estimate MLE parameters
-	theta_ou        = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric)
-	#finalize exageostat instance
-	rexageostat_finalizeR()
+	#Estimate MLE parameters (Exact)
+	theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)
+	#Finalize exageostat instance
+	exageostat_finalizeR()
 	browser()
+}
+
+Test2 <- function()
+# Test Generating Z vector using random (x, y) locations with TLR MLE computation.
+{
+        library("exageostat")		                                #Load ExaGeoStat-R lib.
+        theta1          = 1             		                #Initial variance.
+        theta2          = 0.03						#Initial smoothness.
+        theta3          = 0.5                                  		#Initial range.
+        computation     = 0                                     	#0 --> exact computation, 1--> DST approx, and 2--> LR approx. computation.
+        dmetric         = 0                                     	#0 --> Euclidean distance, 1--> great circle distance.
+        n               = 900                                   	#n*n locations grid.
+        ncores          = 4                                     	#Number of underlying CPUs.
+        gpus            = 0                                     	#Number of underlying GPUs.
+        dts             = 320                                           #Tile_size:  changing it can improve the performance. No fixed value can be given.
+        lts             = 600                                   	#TLR_Tile_size:  changing it can improve the performance. No fixed value can be given.
+        p_grid          = 1                                     	#More than 1 in the case of distributed systems.
+        q_grid          = 1                                     	#More than 1 in the case of distributed systems ( usually equals to p_grid).
+        clb             = vector(mode="numeric", length = 3)    	#Optimization function lower bounds values.
+        cub             = vector(mode="numeric", length = 3)   		#Optimization function upper bounds values.
+        theta_out       = vector(mode="numeric", length = 3)    	#Parameter vector output.
+        globalveclen    = 3*n
+        vecs_out        = vector(mode="numeric", length = globalveclen) #Z measurements of n locations.
+        clb             = as.numeric(c("0.01", "0.01", "0.01"))		#Optimization lower bounds.
+        cub             = as.numeric(c("5.00", "5.00", "5.00"))         #Optimization upper bounds.
+	tlr_acc		= 7						#Approximation accuracy 10^-(acc)
+	tlr_maxrank	= 450						#Max Rank
+        vecs_out[1:globalveclen]        = -1.99
+        theta_out[1:3]                  = -1.99
+        #Initiate exageostat instance
+        exageostat_initR(ncores, gpus, dts)
+        #Generate Z observation vector
+        vecs_out        = gen_z_exactR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        #Estimate MLE parameters (TLR approximation)
+        theta_out       = mle_tlrR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)
+        #Finalize exageostat instance
+        exageostat_finalizeR()
+        browser()
+}
+
+
+Test3 <- function()
+# Test Generating Z vector using random (x, y) locations with DST MLE computation.
+{
+        library("exageostat")                                           #Load ExaGeoStat-R lib.
+        theta1          = 1                                             #Initial variance.
+        theta2          = 0.03                                          #Initial smoothness.
+        theta3          = 0.5                                           #Initial range.
+        computation     = 0                                             #0 --> exact computation, 1--> DST approx, and 2--> LR approx. computation.
+        dmetric         = 0                                             #0 --> Euclidean distance, 1--> great circle distance.
+        n               = 900                                           #n*n locations grid.
+        ncores          = 4                                             #Number of underlying CPUs.
+        gpus            = 0                                             #Number of underlying GPUs.
+        ts             = 320                                           #Tile_size:  changing it can improve the performance. No fixed value can be given.
+        p_grid          = 1                                             #More than 1 in the case of distributed systems.
+        q_grid          = 1                                             #More than 1 in the case of distributed systems ( usually equals to p_grid).
+        clb             = vector(mode="numeric", length = 3)            #Optimization function lower bounds values.
+        cub             = vector(mode="numeric", length = 3)            #Optimization function upper bounds values.
+        theta_out       = vector(mode="numeric", length = 3)            #Parameter vector output.
+        globalveclen    = 3*n
+        vecs_out        = vector(mode="numeric", length = globalveclen) #Z measurements of n locations.
+        clb             = as.numeric(c("0.01", "0.01", "0.01"))         #Optimization lower bounds.
+        cub             = as.numeric(c("5.00", "5.00", "5.00"))         #Optimization upper bounds.
+        dst_thick       = 3                                             #Number of used Diagonal Super Tile (DST).
+        vecs_out[1:globalveclen]        = -1.99
+        theta_out[1:3]                  = -1.99
+        #Initiate exageostat instance
+        exageostat_initR(ncores, gpus, dts)
+        #Generate Z observation vector
+        vecs_out        = gen_z_exactR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        #Estimate MLE parameters (DST approximation)
+        theta_out       = mle_dstR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
+        #Finalize exageostat instance
+        exageostat_finalizeR()
+        browser()
+}
+
+Test4 <- function()
+# Test Generating Z vector using given (x, y) locations with exact MLE computation.
+{
+        library("exageostat")                                       		#Load ExaGeoStat-R lib.
+        theta1          = 1                                            		#Initial variance.
+        theta2          = 0.1                                           	#Initial smoothness.
+        theta3          = 0.5                                           	#Initial range.
+        computation     = 0                                             	#0 --> exact computation, 1--> DST approx, and 2--> LR approx. computation.
+        dmetric         = 0                                            		#0 --> Euclidean distance, 1--> great circle distance.
+        n               = 1600                                          	#n*n locations grid.
+        ncores          = 2                                             	#Number of underlying CPUs.
+        gpus            = 0                                             	#Number of underlying GPUs.
+        ts              = 320                                           	#Tile_size:  changing it can improve the performance. No fixed value can be given.
+        p_grid          = 1                                             	#More than 1 in the case of distributed systems
+        q_grid          = 1                                             	#More than 1 in the case of distributed systems ( usually equals to p_grid)
+        clb             = vector(mode="numeric",length = 3)             	#Optimization function lower bounds values.
+        cub             = vector(mode="numeric",length = 3)             	#Optimization function upper bounds values.
+        theta_out       = vector(mode="numeric",length = 3)             	#Parameter vector output.
+        globalveclen    = n
+        vecs_out        = vector(mode="numeric",length = globalveclen)  	#Z measurements of n locations.
+        x	        = rnorm(n = globalveclen, mean = 39.74, sd = 25.09)	#x measurements of n locations.
+        y       	= rnorm(n = globalveclen, mean = 80.45, sd = 100.19)	#y measurements of n locations.
+        clb             = as.numeric(c("0.01", "0.01", "0.01"))        		#Optimization lower bounds.
+        cub             = as.numeric(c("5.00", "5.00", "5.00"))        		#Optimization upper bounds.
+        vecs_out[1:globalveclen]        = -1.99
+        theta_out[1:3]                  = -1.99
+        #Initiate exageostat instance
+        exageostat_initR(ncores, gpus, ts)
+        #Generate Z observation vector based on given locations
+        vecs_out        = gen_z_givenlocs_exactR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
+        #Estimate MLE parameters (Exact)
+        theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
+        #Finalize exageostat instance
+        exageostat_finalizeR()
+        browser()
 }
 
 gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 {
-	globalvec= vector (mode="numeric", length = globalveclen)
+	globalvec  = vector (mode="numeric", length = globalveclen)
 	globalvec2 = .C("rexageostat_gen_z",
 			as.integer(n),
                 	as.integer(ncores),
@@ -73,9 +186,38 @@ gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, th
 }
 
 
-mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric)
+gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
 {
-	theta_out2= .C("rexageostat_likelihood",
+        globalvec  = vector (mode="numeric", length = globalveclen)
+        globalvec2 = .C("rexageostat_gen_z_givenlocs",
+                        as.integer(n),
+                        as.integer(ncores),
+                        as.integer(gpus),
+                        as.integer(ts),
+                        as.integer(p_grid),
+                        as.integer(q_grid),
+                        as.numeric(x),
+                        as.integer((n)),
+                        as.numeric(y),
+                        as.integer((n)),
+                        as.numeric(theta1),
+                        as.numeric(theta2),
+                        as.numeric(theta3),
+                        as.integer(dmetric),
+                        as.numeric(opt_tol),
+                        as.integer(opt_max_iters),
+                        as.integer(globalveclen),
+                        globalvec = numeric(globalveclen))$globalvec
+
+        globalvec[1:globalveclen] <- globalvec2[1:globalveclen]
+        print("back from gen_z_givenlocs_exact  C function call. Hit key....")
+        return(globalvec)
+}
+
+
+mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric, opt_tol, opt_max_iters)
+{
+	theta_out2 = .C("rexageostat_likelihood",
 	                as.integer(n),
 	                as.integer(ncores),
 	                as.integer(gpus),
@@ -101,7 +243,7 @@ mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, d
 
 mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric)
 {
-        theta_out2= .C("rexageostat_likelihood",
+        theta_out2 = .C("rexageostat_likelihood",
                         as.integer(n),
                         as.integer(ncores),
                         as.integer(gpus),
@@ -130,7 +272,7 @@ mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr
 
 mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric)
 {
-        theta_out2= .C("rexageostat_likelihood",
+        theta_out2 = .C("rexageostat_likelihood",
                         as.integer(n),
                         as.integer(ncores),
                         as.integer(gpus),

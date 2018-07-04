@@ -1,6 +1,7 @@
 useDynLib(exageostat)
 export(TestWrapper)
 export(gen_z_exactR)
+export(gen_z_givenlocs_exactR)
 export(mle_exactR)
 export(mle_tlrR)
 export(mle_dstR)
