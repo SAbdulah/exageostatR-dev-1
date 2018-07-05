@@ -14,7 +14,8 @@ Getting Started
 3. [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/doc/html/index.html).
 4. [StarPU](http://starpu.gforge.inria.fr/).
 5. [Chameleon](https://project.inria.fr/chameleon/).
-
+6. [Hicma](https://github.com/ecrc/hicma/).
+7. [Stars-H](https://github.com/ecrc/stars-h/).
 An easy installation of the above packages is available by using [build-deps.sh](https://github.com/ecrc/exageostatR/blob/master/build_deps.sh)
 
 
