@@ -39,8 +39,8 @@ theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
 exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
-vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 #Estimate MLE parameters (DST approximation)
-theta_out       = mle_dstR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
+theta_out       = exageostat_dstmleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
 #Finalize exageostat instance
 exageostat_finalizeR()

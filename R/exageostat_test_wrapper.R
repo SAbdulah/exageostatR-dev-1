@@ -43,7 +43,7 @@ Test1 <- function()
 	#Initiate exageostat instance
 	exageostat_initR(ncores, gpus, ts)
 	#Generate Z observation vector
-	vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+	vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 	#Estimate MLE parameters (Exact)
 	theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)
 	#Finalize exageostat instance
@@ -81,9 +81,9 @@ Test2 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, dts)
         #Generate Z observation vector
-        vecs_out        = gen_z_exactR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenzR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
         #Estimate MLE parameters (TLR approximation)
-        theta_out       = mle_tlrR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)
+        theta_out       = exageostat_tlrmleR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)
         #Finalize exageostat instance
         exageostat_finalizeR()
         browser()
@@ -118,9 +118,9 @@ Test3 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, ts)
         #Generate Z observation vector
-        vecs_out        = gen_z_exactR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
         #Estimate MLE parameters (DST approximation)
-        theta_out       = mle_dstR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
+        theta_out       = exageostat_dstmleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
         #Finalize exageostat instance
         exageostat_finalizeR()
         browser()
@@ -155,15 +155,15 @@ Test4 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, ts)
         #Generate Z observation vector based on given locations
-        vecs_out        = gen_z_givenlocs_exactR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
         #Estimate MLE parameters (Exact)
-        theta_out       = mle_exactR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
+        theta_out       = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
         #Finalize exageostat instance
         exageostat_finalizeR()
         browser()
 }
 
-gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+exageostat_egenzR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
 {
 	globalvec  = vector (mode="numeric", length = globalveclen)
 	globalvec2 = .C("gen_z_exact",
@@ -186,7 +186,7 @@ gen_z_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, th
 }
 
 
-gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
+exageostat_egenz_glR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
 {
         globalvec  = vector (mode="numeric", length = globalveclen)
         globalvec2 = .C("gen_z_givenlocs_exact",
@@ -212,7 +212,7 @@ gen_z_givenlocs_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, th
 }
 
 
-mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric, opt_tol, opt_max_iters)
+exageostat_emleR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dmetric, opt_tol, opt_max_iters)
 {
 	theta_out2 = .C("mle_exact",
 	                as.integer(n),
@@ -240,7 +240,7 @@ mle_exactR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, d
 	return(theta_out)
 }
 
-mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric, opt_tol, opt_max_iters)
+exageostat_tlrmleR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric, opt_tol, opt_max_iters)
 {
         theta_out2 = .C("mle_tlr",
                         as.integer(n),
@@ -271,7 +271,7 @@ mle_tlrR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, tlr
 }
 
 
-mle_dstR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric, opt_tol, opt_max_iters)
+exageostat_dstmleR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb, cub, dst_thick, dmetric, opt_tol, opt_max_iters)
 {
         theta_out2 = .C("mle_dst",
                         as.integer(n),

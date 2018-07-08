@@ -1,11 +1,11 @@
-\name{gen_z_givenlocs_exactR}
-\alias{gen_z_givenlocs_exactR}
+\name{exageostat_egenz_glR}
+\alias{exageostat_egenz_glR}
 \title{ Sets up the call to the gen_z_givenlocs_exact() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{gen_z_givenlocs_exactR} demonstrates the R / C language interface
+  \code{exageostat_egenz_glR} demonstrates the R / C language interface
 }
 \usage{
-gen_z_exactR(n,
+exageostat_egenzR(n,
 		ncores,
 		gpus,
 		ts,
@@ -45,7 +45,7 @@ gen_z_exactR(n,
 # inline call at R command line or in another R function:
 # Provides function arguments for and calls the R gen_z_exact_given_locs() function.
 #
-#gen_z_givenlocs_exactR(n,
+#exageostat_egenz_glR(n,
 #               ncores,
 #               gpus,
 #               ts,

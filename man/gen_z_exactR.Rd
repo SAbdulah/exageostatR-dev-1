@@ -1,11 +1,11 @@
-\name{gen_z_exactR}
-\alias{gen_z_exactR}
+\name{exageostat_egenzR}
+\alias{exageostat_egenzR}
 \title{ Sets up the call to the gen_z_exact() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{gen_z_exactR} demonstrates the R / C language interface
+  \code{exageostat_egenzR} demonstrates the R / C language interface
 }
 \usage{
-gen_z_exactR(n,
+exageostat_egenzR(n,
 		ncores,
 		gpus,
 		ts,
@@ -41,7 +41,7 @@ gen_z_exactR(n,
 # inline call at R command line or in another R function:
 # Provides function arguments for and calls the R exageostat__gen_zR() function.
 #
-#gen_z_exactR(n,
+#exageostat_egenzR(n,
 #               ncores,
 #               gpus,
 #               ts,
