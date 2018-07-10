@@ -187,6 +187,5 @@ vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y
 #Estimate MLE parameters (Exact)
 theta_out       = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
 #Finalize exageostat instance
->>>>>>> Stashed changes
 exageostat_finalizeR()
 ```
