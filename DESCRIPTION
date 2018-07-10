@@ -1,5 +1,5 @@
 Package: exageostat
-SystemRequirements: GNU make, libstarpu, libnlopt, libgsl, libstarpu-1.2, libchameleon, libchameleon_starpu, libmkl_intel_lp64, libmkl_sequential, libmkl_core, libpthread, libm
+SystemRequirements: GNU make, libstarpu, libnlopt, libgsl, libstarpu-1.2, libchameleon, libchameleon_starpu, libhicma, libstarsh, libmkl_intel_lp64, libmkl_sequential, libmkl_core, libpthread, libm
 Version: 0.1.0
 Date: 2017-11-14
 Title: R package demonstrates the R / C Language interface for ExaGeoStat

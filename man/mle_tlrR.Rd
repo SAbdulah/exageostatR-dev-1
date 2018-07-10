@@ -1,12 +1,12 @@
-\name{mle_tlrR}
-\alias{mle_tlrR}
+\name{exageostat_tlrmleR}
+\alias{exageostat_tlrmleR}
 \title{ Sets up the call to the mle_tlr() C language function accessed via the  R '.C' external function call API }
 \description{
-  \code{mle_tlrR} demonstrates the R / C language interface
+  \code{exageostat_tlrmleR} demonstrates the R / C language interface
 }
 
 \usage{
-mle_tlrR(n,
+exageostat_tlrmleR(n,
 		ncores,
 		gpus,
 		ts,
