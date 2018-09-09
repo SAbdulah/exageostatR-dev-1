@@ -15,6 +15,7 @@ exageostat_egenzR(n,
 		theta2,
 		theta3,
 		dmetric,
+		seed,
 		globalveclen)
 }
 \arguments{
@@ -28,6 +29,7 @@ exageostat_egenzR(n,
   \item{theta2}{Double  - initial theta2 values to generate z}
   \item{theta3}{Double  - initial theta3 values to generate z}
   \item{dmetric}{ Integer - "0:dm" or "1:gcd"}
+  \item{seed}{Integer - initial seed}
   \item{globalveclen}{ Integer - output vector length}
 }
 \value{

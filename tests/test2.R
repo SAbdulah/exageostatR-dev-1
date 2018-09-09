@@ -15,6 +15,7 @@
  # @author Sameh Abdulah
  # @date 2018-07-04
 library("exageostat")                                           #Load ExaGeoStat-R lib.
+seed            = 0                                             #Initial seed to generate XY locs.
 theta1          = 1                                             #Initial variance.
 theta2          = 0.03                                          #Initial smoothness.
 theta3          = 0.5                                           #Initial range.
@@ -41,7 +42,7 @@ theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
 exageostat_initR(ncores, gpus, dts)
 #Generate Z observation vector
-vecs_out        = exageostat_egenzR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+vecs_out        = exageostat_egenzR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
 #Estimate MLE parameters (TLR approximation)
 theta_out       = exageostat_tlrmleR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)
 #Finalize exageostat instance

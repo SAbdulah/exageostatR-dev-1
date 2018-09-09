@@ -20,6 +20,7 @@ Test1 <- function()
 # Test Generating Z vector using random (x, y) locations with exact MLE computation.
 {
 	library("exageostat")						#Load ExaGeoStat-R lib.
+	seed		= 0						#Initial seed to generate XY locs.
 	theta1          = 1						#Initial variance.
 	theta2          = 0.1                                   	#Initial smoothness.
 	theta3          = 0.5                                   	#Initial range.
@@ -43,7 +44,7 @@ Test1 <- function()
 	#Initiate exageostat instance
 	exageostat_initR(ncores, gpus, ts)
 	#Generate Z observation vector
-	vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+	vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
 	#Estimate MLE parameters (Exact)
 	theta_out       = mle_exact(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)
 	#Finalize exageostat instance
@@ -55,6 +56,7 @@ Test2 <- function()
 # Test Generating Z vector using random (x, y) locations with TLR MLE computation.
 {
         library("exageostat")		                                #Load ExaGeoStat-R lib.
+        seed            = 0                                             #Initial seed to generate XY locs.
         theta1          = 1             		                #Initial variance.
         theta2          = 0.03						#Initial smoothness.
         theta3          = 0.5                                  		#Initial range.
@@ -81,7 +83,7 @@ Test2 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, dts)
         #Generate Z observation vector
-        vecs_out        = exageostat_egenzR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenzR(n, ncores, gpus, dts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
         #Estimate MLE parameters (TLR approximation)
         theta_out       = exageostat_tlrmleR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)
         #Finalize exageostat instance
@@ -94,6 +96,7 @@ Test3 <- function()
 # Test Generating Z vector using random (x, y) locations with DST MLE computation.
 {
         library("exageostat")                                           #Load ExaGeoStat-R lib.
+        seed            = 0                                             #Initial seed to generate XY locs.
         theta1          = 1                                             #Initial variance.
         theta2          = 0.03                                          #Initial smoothness.
         theta3          = 0.5                                           #Initial range.
@@ -102,7 +105,7 @@ Test3 <- function()
         n               = 900                                           #n*n locations grid.
         ncores          = 4                                             #Number of underlying CPUs.
         gpus            = 0                                             #Number of underlying GPUs.
-        ts             = 320                                           #Tile_size:  changing it can improve the performance. No fixed value can be given.
+        ts             = 320                                            #Tile_size:  changing it can improve the performance. No fixed value can be given.
         p_grid          = 1                                             #More than 1 in the case of distributed systems.
         q_grid          = 1                                             #More than 1 in the case of distributed systems ( usually equals to p_grid).
         clb             = vector(mode="numeric", length = 3)            #Optimization function lower bounds values.
@@ -118,7 +121,7 @@ Test3 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, ts)
         #Generate Z observation vector
-        vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
         #Estimate MLE parameters (DST approximation)
         theta_out       = exageostat_dstmleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
         #Finalize exageostat instance
@@ -130,6 +133,7 @@ Test4 <- function()
 # Test Generating Z vector using given (x, y) locations with exact MLE computation.
 {
         library("exageostat")                                       		#Load ExaGeoStat-R lib.
+        seed            = 0                                                     #Initial seed to generate XY locs.
         theta1          = 1                                            		#Initial variance.
         theta2          = 0.1                                           	#Initial smoothness.
         theta3          = 0.5                                           	#Initial range.
@@ -155,7 +159,7 @@ Test4 <- function()
         #Initiate exageostat instance
         exageostat_initR(ncores, gpus, ts)
         #Generate Z observation vector based on given locations
-        vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
+        vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, seed, globalveclen)
         #Estimate MLE parameters (Exact)
         theta_out       = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
         #Finalize exageostat instance
@@ -163,7 +167,7 @@ Test4 <- function()
         browser()
 }
 
-exageostat_egenzR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, globalveclen)
+exageostat_egenzR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
 {
 	globalvec  = vector (mode="numeric", length = globalveclen)
 	globalvec2 = .C("gen_z_exact",
@@ -177,6 +181,7 @@ exageostat_egenzR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta
 			as.numeric(theta2),
 			as.numeric(theta3),
                 	as.integer(dmetric),
+			as.integer(seed),
 	                as.integer(globalveclen),		
 			globalvec = numeric(globalveclen))$globalvec
 
@@ -186,7 +191,7 @@ exageostat_egenzR <- function(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta
 }
 
 
-exageostat_egenz_glR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, globalveclen)
+exageostat_egenz_glR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric, seed, globalveclen)
 {
         globalvec  = vector (mode="numeric", length = globalveclen)
         globalvec2 = .C("gen_z_givenlocs_exact",
@@ -204,6 +209,7 @@ exageostat_egenz_glR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, thet
                         as.numeric(theta2),
                         as.numeric(theta3),
                         as.integer(dmetric),
+			as.integer(seed),
                         as.integer(globalveclen),
                         globalvec = numeric(globalveclen))$globalvec
         globalvec[1:globalveclen] <- globalvec2[1:globalveclen]
