@@ -19,7 +19,6 @@ seed            = 0                                             #Initial seed to
 theta1          = 1                                             #Initial variance.
 theta2          = 0.1                                           #Initial smoothness.
 theta3          = 0.5                                           #Initial range.
-computation     = 0                                             #0 --> exact computation, 1--> DST approx, and 2--> LR approx. computation.
 dmetric         = 0                                             #0 --> Euclidean distance, 1--> great circle distance.
 n               = 1600                                          #n*n locations grid.
 ncores          = 2                                             #Number of underlying CPUs.
@@ -27,13 +26,13 @@ gpus            = 0                                             #Number of under
 ts              = 320                                           #Tile_size:  changing it can improve the performance. No fixed value can be given.
 p_grid          = 1                                             #More than 1 in the case of distributed systems
 q_grid          = 1                                             #More than 1 in the case of distributed systems ( usually equals to p_grid)
-clb             = vector(mode="numeric",length = 3)             #Optimization function lower bounds values.
-cub             = vector(mode="numeric",length = 3)             #Optimization function upper bounds values.
-theta_out       = vector(mode="numeric",length = 3)             #Parameter vector output.
+clb             = vector(mode="double",length = 3)             #Optimization function lower bounds values.
+cub             = vector(mode="double",length = 3)             #Optimization function upper bounds values.
+theta_out       = vector(mode="double",length = 3)             #Parameter vector output.
 globalveclen    = 3*n
-vecs_out        = vector(mode="numeric",length = globalveclen)  #Z measurements of n locations
-clb             = as.numeric(c("0.01", "0.01", "0.01"))         #Optimization lower bounds.
-cub             = as.numeric(c("5.00", "5.00", "5.00"))         #Optimization upper bounds.
+vecs_out        = vector(mode="double",length = globalveclen)  #Z measurements of n locations
+clb             = as.double(c("0.01", "0.01", "0.01"))         #Optimization lower bounds.
+cub             = as.double(c("5.00", "5.00", "5.00"))         #Optimization upper bounds.
 vecs_out[1:globalveclen]        = -1.99
 theta_out[1:3]                  = -1.99
 exageostat_initR(ncores, gpus, ts)#Initiate exageostat instance
