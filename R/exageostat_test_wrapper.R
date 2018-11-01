@@ -305,11 +305,11 @@ exageostat_dstmleR <- function(n, ncores, gpus, ts, p_grid, q_grid, x, y, z, clb
 
 exageostat_initR <- function(ncores, gpus, ts)
 {
-	#install.packages(repos="https://cran.r-project.org", "RhpcBLASctl")
-        library(RhpcBLASctl)
-	blas_get_num_procs()
-	blas_set_num_threads(1)
-	omp_set_num_threads(1)
+        library("parallel")
+	Sys.setenv(OMP_NUM_THREADS=1)
+	Sys.setenv(STARPU_WORKERS_NOBIND=1)
+	mcaffinity(1:ncores)
+
 	.C("rexageostat_init",
             as.integer(ncores),
             as.integer(gpus),
