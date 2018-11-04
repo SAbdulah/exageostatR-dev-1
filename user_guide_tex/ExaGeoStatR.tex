@@ -1,0 +1,599 @@
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arsclassica Article
+% LaTeX Template
+% Version 1.1 (05/01/2015)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author: Adriano Palombo
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+10pt, % Main document font size
+a4paper, % Paper type, use 'letterpaper' for US Letter paper
+oneside, % One page layout (no page indentation)
+%twoside, % Two page layout (page indentation for binding and different headers)
+headinclude,footinclude, % Extra spacing for the header and footer
+BCOR5mm, % Binding correction
+]{scrartcl}
+
+\usepackage{framed, color}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily}
+\definecolor{shadecolor}{rgb}{0.59, 0.8, 0.8}
+
+\input{structure.tex} % Include the structure.tex file which specified the document structure and layout
+
+\hyphenation{Fortran hy-phen-ation} % Specify custom hyphenation points in words with dashes where you would like hyphenation to occur, or alternatively, don't put any dashes in a word to stop hyphenation altogether
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND AUTHOR(S)
+%----------------------------------------------------------------------------------------
+
+\title{\normalfont\spacedallcaps{ExaGeoStat-R Installation Guide}} 
+% The article title
+
+\author{\spacedlowsmallcaps{Version 1.0.0}} % The article author(s) - author affiliations need to be specified in the AUTHOR AFFILIATIONS block
+
+%\date{} % An optional date to appear under the author(s)
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	HEADERS
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} % The header for all pages (oneside) or for even pages (twoside)
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection~#1}} % Uncomment when using the twoside option - this modifies the header on odd pages
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} % The header style
+
+\pagestyle{scrheadings} % Enable the headers specified in this block
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
+%----------------------------------------------------------------------------------------
+
+\maketitle % Print the title/author/date block
+
+\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+
+\tableofcontents % Print the table of contents
+
+%\listoffigures % Print the list of figures
+
+%\listoftables % Print the list of tables
+
+%----------------------------------------------------------------------------------------
+%	AUTHOR AFFILIATIONS
+%----------------------------------------------------------------------------------------
+
+{\let\thefootnote\relax\footnotetext{* \textit{Extreme Computing Research Center (ECRC), KAUST, Thuwal, Saudi Arabia}}}
+
+%{\let\thefootnote\relax\footnotetext{\textsuperscript{1} \textit{Department of Chemistry, University of Examples, London, United Kingdom}}}
+
+%----------------------------------------------------------------------------------------
+
+\newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Chapter 1. General Information}
+
+\subsection{Introduction}
+This document describes how to install ExaGeoStatR on various platforms. One chapter
+is dedicated to each operating system.
+
+\subsection{Supported Platforms}
+ExaGeoStatR has been tested and is supported on the following operating systems:
+
+\begin{enumerate}
+\item MacOS.
+\item Linux distributions.
+\item Cray XC40 systems.
+\end{enumerate}
+
+\begin{shaded}
+{\textbf Note:} ExaGeoStat can be run practically on any Linux-like environment with a decent and fairly
+up-to-date C++ compiler, for example gcc 5.x. Certain ExaGeoStat-R features (Dense, Diagonal Super Tile(DST), Tile Low Rank(TLR), etc.) depend on the availability of external libraries
+(Nlopt, StarPU, Chameleon, HiCMA, Stars-H, etc.)
+\end{shaded}
+
+\subsection{Software Dependencies }
+\begin{enumerate}
+\item {\textbf {Portable Hardware Locality (hwloc):}} a software package provides a portable abstraction of the hierarchical topology of modern architectures.
+\item {\textbf {NLopt: a library for nonlinear optimization:}} providing a common interface for a number of different free optimization routines available online as well as original implementations of various other algorithms.
+\item {\textbf {GNU Scientific Library (GSL):}} a collection of routines for numerical computing.
+\item {{\textbf StarPU:}} a task programming library for hybrid architectures.
+\item {{\textbf Chameleon:}} a dense linear algebra software relying on sequential task-based algorithms where sub-tasks of the overall algorithms are submitted to a runtime system.
+\item {{\textbf HiCMA:}} Hierarchical Computations on Manycore Architectures library, aims to redesign existing dense linear algebra libraries to exploit the data sparsity of the matrix operator.
+\item {{\textbf STARS-H:}} a High performance parallel open-source package of Software for Testing Accuracy, Reliability and Scalability of Hierarchical computations.
+\end{enumerate}
+
+
+\newpage
+
+\section{Chapter 2. macOS}
+\subsection{Supported  Releases}
+This Chapter provides additional information for installing ExaGeoStat on macOS.
+The following release are covered:
+\begin{enumerate}
+\item macOS high sierra 10.13.
+\end{enumerate}
+
+\subsection{Installing the prerequisite Packages}
+\begin{enumerate}
+\item
+\noindent Downloading, Configuring and Building CMake 3.2.3 or higher,
+\begin{lstlisting}[language=bash]
+$ wget  https://cmake.org/files/v3.10/cmake-3.10.0-rc3.tar.gz
+$ tar -zxvf cmake-3.10.0-rc3.tar.gz
+$ cd cmake-3.10.0-rc3
+$ ./configure 
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+
+\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for macOS.
+
+%\noindent . /opt/intel/mkl/bin/mklvars.sh intel64
+\noindent \$ export MKLROOT=/opt/intel/mkl
+
+\item
+\noindent Downloading, Configuring and Building NLOPT library 2.4.2 or higher,
+\begin{lstlisting}[language=bash]
+$ wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
+$ tar -zxvf nlopt-2.4.2.tar.gz
+$ cd nlopt-2.4.2
+$ ./configure --enable-shared  --without-guile
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building GSL library 2.4 or higher,
+\begin{lstlisting}[language=bash]
+$ wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
+$ tar -zxvf gsl-2.4.tar.gz
+$ cd gsl-2.4
+$ ./configure 
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building hwloc 1.11.5 or higher,
+\begin{lstlisting}[language=bash]
+$ wget https://www.open-mpi.org/software/hwloc/v1.11/
+downloads/hwloc-1.11.5.tar.gz
+$ tar -zxvf hwloc-1.11.5.tar.gz
+$./configure
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building StarPU 1.2.5 or higher,
+\begin{lstlisting}[language=bash]
+$ wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/
+starpu-1.2.5.tar.gz
+$ tar -zxvf starpu-1.2.5.tar.gz
+$ cd starpu-1.2.5
+$ ./configure  -disable-cuda -disable-mpi --disable-opencl
+$ make -j && make -j install
+\end{lstlisting}
+
+%
+%\begin{shaded}
+%{\textbf {StarPU Configuration:}} In the case of GPUs systems, both cuda and opencl should be enabled using -enable option.
+%If MPI is required, it should be also enabled using -enable option.
+%\end{shaded}
+
+
+\item
+\noindent Download Chameleon, HiCMA, and STARS-H,
+\begin{lstlisting}[language=bash]
+$ git clone https://github.com/ecrc/exageostat.git
+$ cd exageostat-dev
+$ git submodule update --init --recursive
+\end{lstlisting}
+
+\item
+\noindent Configuring and Building Chameleon Software,
+\begin{lstlisting}[language=bash]
+$ cd exageostat
+$ cd hicma
+$ cd chameleon
+$ mkdir build && cd build
+$ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON 
+-DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
+-lmkl_sequential;-lpthread;-lm;-ldl"
+$ make 
+$ make install
+\end{lstlisting}
+
+%\begin{shaded}
+%{\textbf {Chameleon Configuration:}} In the case of GPUs systems,  -DCHAMELEON\_USE\_CUDA=ON
+%If MPI is required, it should be also enabled using -DCHAMELEON\_USE\_MPI=ON.
+%\end{shaded}
+
+\item
+\noindent Configuring and Building STARS-H Library (optional),
+\begin{lstlisting}[language=bash]
+$ cd exageostat
+$ cd stars-h
+$ mkdir build 
+$ cmake .. -DCMAKE_C_FLAGS=-fPIC 
+$ make -j && make  install
+\end{lstlisting}
+
+
+
+\item
+\noindent Configuring and Building HiCMA library (optional):
+\begin{lstlisting}[language=bash]
+$ cd ..
+# mkdir build && cd build
+$ cmake ..  -DCMAKE_C_FLAGS=-fPIC -DCBLAS_DIR="${MKLROOT}" 
+-DLAPACKE_DIR="${MKLROOT}"
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;
+-lmkl_sequential;-lpthread;-lm;-ldl"
+$ make 
+$ make  install
+\end{lstlisting}
+\end{enumerate}
+
+
+\begin{shaded}
+{\textbf {Note:}} Here, we assume ROOT access during installation. if not, 
+\begin{enumerate}
+\item -DCMAKE\_INSTALL\_PREFIX=\$PWD/installdir should be added to the $cmake$ commands, where $installdir$ is your local installation directory.
+\item --prefix=\$PWD/installdir should be added to the $configure$ commands, where $installdir$ is your local installation directory.
+\item  $pkgconfig$ for NLOPT, GSL, hwloc, StarPU, Chameleon, STARS-H, HiCMA paths need to be exported to PKG\_CONFIG\_PATH environment variable.
+\end{enumerate}
+\end{shaded}
+
+\subsection{ExaGeoStat on R}
+\begin{enumerate}
+\item
+\noindent Install latest ExaGeoStat R version hosted on GitHub:
+\begin{lstlisting}[language=R]
+install.packages("devtools")
+library(devtools)
+install_git(url="https://github.com/ecrc/exageostatR")
+library(exageostat)
+\end{lstlisting}
+
+
+\end{enumerate}
+
+
+\subsection{Verifying the Installation}
+Run one or more examples from Chapter 4.
+
+
+\section{Chapter 3. Linux}
+\subsection{Supported Linux Distributions}
+This chapter provides instructions for installing ExaGeoStat on selected Linux distributions:
+\begin{enumerate}
+\item Ubuntu 16.04 LTS.
+\item  Fedora Core 25.
+\item Red Hat Enterprise Linux Desktop Workstation 7.x
+\item  OpenSUSE 42.
+
+\end{enumerate}
+
+\subsection{Installing the prerequisite Packages}
+\begin{enumerate}
+\item
+\noindent Downloading, Configuring and Building CMake 3.2.3 or higher,
+\begin{lstlisting}[language=bash]
+$ wget  https://cmake.org/files/v3.10/cmake-3.10.0-rc3.tar.gz
+$ tar -zxvf cmake-3.10.0-rc3.tar.gz
+$ cd cmake-3.10.0-rc3
+$ ./configure 
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+
+\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for macOS.
+
+%\noindent . /opt/intel/mkl/bin/mklvars.sh intel64
+\noindent \$ export MKLROOT=/opt/intel/mkl
+
+\item
+\noindent Downloading, Configuring and Building NLOPT library 2.4.2 or higher,
+\begin{lstlisting}[language=bash]
+$ wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
+$ tar -zxvf nlopt-2.4.2.tar.gz
+$ cd nlopt-2.4.2
+$ ./configure --enable-shared  --without-guile
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building GSL library 2.4 or higher,
+\begin{lstlisting}[language=bash]
+$ wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
+$ tar -zxvf gsl-2.4.tar.gz
+$ cd gsl-2.4
+$ ./configure 
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building hwloc 1.11.5 or higher,
+\begin{lstlisting}[language=bash]
+$ wget https://www.open-mpi.org/software/hwloc/v1.11/
+downloads/hwloc-1.11.5.tar.gz
+$ tar -zxvf hwloc-1.11.5.tar.gz
+$./configure
+$ make -j && make -j install
+\end{lstlisting}
+
+\item
+\noindent Downloading, Configuring and Building StarPU 1.2.5 or higher,
+\begin{lstlisting}[language=bash]
+$ wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/
+starpu-1.2.5.tar.gz
+$ tar -zxvf starpu-1.2.5.tar.gz
+$ cd starpu-1.2.5
+$ ./configure  -disable-cuda -disable-mpi --disable-opencl
+$ make -j && make -j install
+\end{lstlisting}
+
+
+\begin{shaded}
+{\textbf {StarPU Configuration:}} In the case of GPUs systems, both cuda and opencl should be enabled using -enable option.
+If MPI is required, it should be also enabled using -enable option.
+\end{shaded}
+
+
+\item
+\noindent Download Chameleon, HiCMA, and STARS-H,
+\begin{lstlisting}[language=bash]
+$ git clone https://github.com/ecrc/exageostat.git
+$ cd exageostat-dev
+$ git submodule update --init --recursive
+\end{lstlisting}
+
+\item
+\noindent Configuring and Building Chameleon Software,
+\begin{lstlisting}[language=bash]
+$ cd exageostat
+$ cd hicma
+$ cd chameleon
+$ mkdir build && cd build
+$ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON 
+-DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
+-lmkl_sequential;-lpthread;-lm;-ldl"
+$ make 
+$ make install
+\end{lstlisting}
+
+\begin{shaded}
+{\textbf {Chameleon Configuration:}} In the case of GPUs systems,  -DCHAMELEON\_USE\_CUDA=ON
+If MPI is required, it should be also enabled using -DCHAMELEON\_USE\_MPI=ON.
+\end{shaded}
+
+\item
+\noindent Configuring and Building STARS-H Library (optional),
+\begin{lstlisting}[language=bash]
+$ cd exageostat
+$ cd stars-h
+$ mkdir build 
+$ cmake .. -DCMAKE_C_FLAGS=-fPIC 
+$ make -j && make  install
+\end{lstlisting}
+
+
+
+\item
+\noindent Configuring and Building HiCMA library (optional):
+\begin{lstlisting}[language=bash]
+$ cd ..
+# mkdir build && cd build
+$ cmake ..  -DCMAKE_C_FLAGS=-fPIC -DCBLAS_DIR="${MKLROOT}" 
+-DLAPACKE_DIR="${MKLROOT}"
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;
+-lmkl_sequential;-lpthread;-lm;-ldl"
+$ make 
+$ make  install
+\end{lstlisting}
+\end{enumerate}
+
+\begin{shaded}
+{\textbf {Note:}} Here, we assume ROOT access during installation. if not, 
+\begin{enumerate}
+\item -DCMAKE\_INSTALL\_PREFIX=\$PWD/installdir should be added to the $cmake$ commands, where $installdir$ is your local installation directory.
+\item --prefix=\$PWD/installdir should be added to the $configure$ commands, where $installdir$ is your local installation directory.
+\item  $pkgconfig$ for NLOPT, GSL, hwloc, StarPU, Chameleon, STARS-H, HiCMA paths need to be exported to PKG\_CONFIG\_PATH environment variable.
+\end{enumerate}
+\end{shaded}
+
+
+\subsection{ExaGeoStat on R}
+\begin{enumerate}
+\item
+\noindent Install latest ExaGeoStat R version hosted on GitHub:
+\begin{lstlisting}[language=R]
+install.packages("devtools")
+library(devtools)
+install_git(url="https://github.com/ecrc/exageostatR")
+library(exageostat)
+\end{lstlisting}
+
+
+\end{enumerate}
+
+
+\subsection{Verifying the Installation}
+Run one or more examples from Chapter 4.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Chapter 4. Examples}
+\subsection{Example 1: Synthetic generation of Geo-spatial data with MLE exact computation,}
+\begin{lstlisting}[language=R]
+library("exageostat") 		#Load ExaGeoStat-R lib.
+seed         = 0 		#Initial seed to generate XY locs.
+theta1       = 1 		#Initial variance.
+theta2       = 0.1 		#Initial range.
+theta3       = 0.5 		#Initial smoothness.
+dmetric      = 0 		#0 --> Euclidean distance, 1--> great circle distance.
+n            = 1600 		#n*n locations grid.
+ncores       = 2 		#Number of underlying CPUs.
+gpus         = 0 		#Number of underlying GPUs.
+ts           = 320 		#Tile_size:  changing it can improve the performance. 
+p_grid       = 1 		#More than 1 in the case of distributed systems.
+q_grid       = 1 		#More than 1 in the case of distributed systems.
+clb          = vector(mode="double",length = 3) #Optimization  lower bounds values.
+cub          = vector(mode="double",length = 3) #Optimization  upper bounds values.
+theta_out    = vector(mode="double",length = 3) #Parameter vector output.
+globalveclen = 3*n
+vecs_out     = vector(mode="double",length = globalveclen)#Z measurements of n locations.
+clb          = as.double(c("0.01", "0.01", "0.01")) 	  #Optimization lower bounds.
+cub          = as.double(c("5.00", "5.00", "5.00"))  	  #Optimization upper bounds.
+vecs_out[1:globalveclen]     = -1.99
+theta_out[1:3]               = -1.99
+exageostat_initR(ncores, gpus, ts) 			   #Initiate exageostat instance.
+vecs_out     = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid,
+theta1, theta2, theta3, dmetric, seed, globalveclen) 	  #Generate Z observation vector.
+theta_out    = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],
+vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)    #Exact Estimation (MLE).
+exageostat_finalizeR() 					   #Finalize exageostat instance
+\end{lstlisting}
+
+========================================================================
+
+\subsection{Example 2: Synthetic generation of Geo-spatial data with MLE TLR computation,}
+\begin{lstlisting}[language=R]
+library("exageostat") 		#Load ExaGeoStat-R lib.
+seed         = 0 		#Initial seed to generate XY locs.
+theta1       = 1 		#Initial variance.
+theta2       = 0.03 		#Initial range.
+theta3       = 0.5 		#Initial smoothness.
+dmetric      = 0 		#0 --> Euclidean distance, 1--> great circle distance.
+n            = 900 		#n*n locations grid.
+ncores       = 4 		#Number of underlying CPUs.
+gpus         = 0 		#Number of underlying GPUs.
+ts           = 320 		#Tile_size:  changing it can improve the performance. 
+lts          = 600 		#TLR_Tile_size:  changing it can improve the performance. 
+tlr_acc      = 7 		#approximation accuracy 10^-(acc).
+tlr_maxrank  = 450 		#Max rank.
+p_grid       = 1 		#More than 1 in the case of distributed systems.
+q_grid       = 1 		#More than 1 in the case of distributed systems.
+clb          = vector(mode="double",length = 3) #Optimization  lower bounds values.
+cub          = vector(mode="double",length = 3) #Optimization  upper bounds values.
+theta_out    = vector(mode="double",length = 3) #Parameter vector output.
+globalveclen = 3*n
+vecs_out     = vector(mode="double",length = globalveclen)#Z measurements of n locations.
+clb          = as.double(c("0.01", "0.01", "0.01")) 	  #Optimization lower bounds.
+cub          = as.double(c("5.00", "5.00", "5.00"))  	  #Optimization upper bounds.
+vecs_out[1:globalveclen]     = -1.99
+theta_out[1:3]               = -1.99
+exageostat_initR(ncores, gpus, ts) 			  #Initiate exageostat instance.
+vecs_out     = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid,
+theta1, theta2, theta3, dmetric, seed, globalveclen) 	  #Generate Z observation vector.
+theta_out       = exageostat_tlrmleR(n, ncores, gpus, lts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)],
+ clb, cub, tlr_acc, tlr_maxrank,  dmetric, 0.0001, 20)    #TLR Estimation (MLE).
+exageostat_finalizeR() 					  #Finalize exageostat instance.
+\end{lstlisting}
+
+
+
+========================================================================
+
+
+\subsection{Example 3: Synthetic generation of Geo-spatial data with MLE DST computation,}
+\begin{lstlisting}[language=R]
+library("exageostat") 		#Load ExaGeoStat-R lib.
+seed         = 0 		#Initial seed to generate XY locs.
+theta1       = 1 		#Initial variance.
+theta2       = 0.1 		#Initial range.
+theta3       = 0.5 		#Initial smoothness.
+dmetric      = 0 		#0 --> Euclidean distance, 1--> great circle distance.
+n            = 1600 		#n*n locations grid.
+ncores       = 2 		#Number of underlying CPUs.
+gpus         = 0 		#Number of underlying GPUs.
+ts           = 320 		#Tile_size:  changing it can improve the performance. 
+p_grid       = 1 		#More than 1 in the case of distributed systems.
+q_grid       = 1 		#More than 1 in the case of distributed systems.
+clb          = vector(mode="double",length = 3) #Optimization  lower bounds values.
+cub          = vector(mode="double",length = 3) #Optimization  upper bounds values.
+theta_out    = vector(mode="double",length = 3) #Parameter vector output.
+globalveclen = 3*n
+vecs_out     = vector(mode="double",length = globalveclen)#Z measurements of n locations.
+clb          = as.double(c("0.01", "0.01", "0.01")) 	  #Optimization lower bounds.
+cub          = as.double(c("5.00", "5.00", "5.00"))  	  #Optimization upper bounds.
+vecs_out[1:globalveclen]     = -1.99
+theta_out[1:3]               = -1.99
+exageostat_initR(ncores, gpus, ts) 			   #Initiate exageostat instance.
+vecs_out     = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid,
+theta1, theta2, theta3, dmetric, seed, globalveclen) 	  #Generate Z observation vector.
+theta_out    = exageostat_dstmleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],
+vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)    #DST Estimation (MLE).
+exageostat_finalizeR() 					   #Finalize exageostat instance
+\end{lstlisting}
+========================================================================
+
+
+\subsection{Example 4: Synthetic generation of measurements based on given Geo-spatial data locations with MLE Exact computation,}
+\begin{lstlisting}[language=R]
+library("exageostat") 		#Load ExaGeoStat-R lib.
+seed         = 0 		#Initial seed to generate XY locs.
+theta1       = 1 		#Initial variance.
+theta2       = 0.1 		#Initial range.
+theta3       = 0.5 		#Initial smoothness.
+dmetric      = 0 		#0 --> Euclidean distance, 1--> great circle distance.
+n            = 1600 		#n*n locations grid.
+ncores       = 2 		#Number of underlying CPUs.
+gpus         = 0 		#Number of underlying GPUs.
+ts           = 320 		#Tile_size:  changing it can improve the performance. 
+p_grid       = 1 		#More than 1 in the case of distributed systems.
+q_grid       = 1 		#More than 1 in the case of distributed systems.
+clb          = vector(mode="double",length = 3) #Optimization  lower bounds values.
+cub          = vector(mode="double",length = 3) #Optimization  upper bounds values.
+theta_out    = vector(mode="double",length = 3) #Parameter vector output.
+globalveclen = 3*n
+x               = rnorm(n = globalveclen, mean = 39.74, sd = 25.09)     #X dimension vector of n locations.
+y               = rnorm(n = globalveclen, mean = 80.45, sd = 100.19)    #Y dimension vector of n locations.
+vecs_out     = vector(mode="double",length = globalveclen)#Z measurements of n locations.
+clb          = as.double(c("0.01", "0.01", "0.01")) 	  #Optimization lower bounds.
+cub          = as.double(c("5.00", "5.00", "5.00"))  	  #Optimization upper bounds.
+vecs_out[1:globalveclen]     = -1.99
+theta_out[1:3]               = -1.99
+exageostat_initR(ncores, gpus, ts) 			   #Initiate exageostat instance.
+vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid,
+x, y, theta1, theta2, theta3, 
+dmetric, globalveclen) 		  #Generate Z observation vector based on given locations.
+theta_out    = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],
+vecs_out[(2*n+1):(3*n)], clb, cub, dmetric, 0.0001, 20)    #Exact Estimation (MLE).
+exageostat_finalizeR() 					   #Finalize exageostat instance
+\end{lstlisting}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+%\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
+
+%\bibliographystyle{unsrt}
+
+%\bibliography{sample.bib} % The file containing the bibliography
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
