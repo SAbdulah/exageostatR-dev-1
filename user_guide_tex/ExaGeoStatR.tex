@@ -247,12 +247,9 @@ $ cd exageostat
 $ cd hicma
 $ mkdir -p build
 $ cd build
-$ cmake ..  -DCMAKE_C_FLAGS=-fPIC -DCBLAS_DIR="${MKLROOT}" 
--DLAPACKE_DIR="${MKLROOT}"
--DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;
--lmkl_sequential;-lpthread;-lm;-ldl"
+$ cmake .. -DBUILD_SHARED_LIBS=ON
 $ make 
-$ make  install
+$ make install
 \end{lstlisting}
 \end{enumerate}
 
