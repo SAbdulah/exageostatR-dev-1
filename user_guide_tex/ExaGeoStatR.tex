@@ -216,7 +216,7 @@ $ cd chameleon
 $ mkdir build && cd build
 $ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON 
 -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
--DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib/intel64;-lmkl_intel_lp64;-lmkl_core; 
 -lmkl_sequential;-lpthread;-lm;-ldl"
 $ make 
 $ sudo make install
@@ -378,7 +378,7 @@ $ cd chameleon
 $ mkdir build && cd build
 $ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON 
 -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
--DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
+-DBLAS_LIBRARIES="-L${MKLROOT}/lib/intel64;-lmkl_intel_lp64;-lmkl_core; 
 -lmkl_sequential;-lpthread;-lm;-ldl"
 $ make 
 $ sudo make install
