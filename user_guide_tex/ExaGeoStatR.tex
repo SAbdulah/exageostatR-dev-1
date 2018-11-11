@@ -298,16 +298,16 @@ This chapter provides instructions for installing ExaGeoStat on selected Linux d
 \item
 \noindent Downloading, Configuring and Building CMake 3.2.3 or higher,
 \begin{lstlisting}[language=bash]
-$ wget  https://cmake.org/files/v3.10/cmake-3.10.0-rc3.tar.gz
-$ tar -zxvf cmake-3.10.0-rc3.tar.gz
-$ cd cmake-3.10.0-rc3
-$ ./configure 
-$ make -j && make -j install
+$ wget  https://cmake.org/files/v3.12/cmake-3.12.4.tar.gz
+$ tar -zxvf cmake-3.12.4.tar.gz
+$ cd cmake-3.12.4
+$ ./configure --system-curl
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
 
-\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for macOS.
+\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for Linux.
 
 %\noindent . /opt/intel/mkl/bin/mklvars.sh intel64
 \noindent \$ export MKLROOT=/opt/intel/mkl
@@ -319,7 +319,7 @@ $ wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
 $ tar -zxvf nlopt-2.4.2.tar.gz
 $ cd nlopt-2.4.2
 $ ./configure --enable-shared  --without-guile
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -329,7 +329,7 @@ $ wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
 $ tar -zxvf gsl-2.4.tar.gz
 $ cd gsl-2.4
 $ ./configure 
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -338,8 +338,9 @@ $ make -j && make -j install
 $ wget https://www.open-mpi.org/software/hwloc/v1.11/
 downloads/hwloc-1.11.5.tar.gz
 $ tar -zxvf hwloc-1.11.5.tar.gz
+$ cd hwloc-1.11.5
 $./configure
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -350,7 +351,7 @@ starpu-1.2.5.tar.gz
 $ tar -zxvf starpu-1.2.5.tar.gz
 $ cd starpu-1.2.5
 $ ./configure  -disable-cuda -disable-mpi --disable-opencl
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 
@@ -364,7 +365,7 @@ If MPI is required, it should be also enabled using -enable option.
 \noindent Download Chameleon, HiCMA, and STARS-H,
 \begin{lstlisting}[language=bash]
 $ git clone https://github.com/ecrc/exageostat.git
-$ cd exageostat-dev
+$ cd exageostat
 $ git submodule update --init --recursive
 \end{lstlisting}
 
@@ -380,7 +381,7 @@ $ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON
 -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
 -lmkl_sequential;-lpthread;-lm;-ldl"
 $ make 
-$ make install
+$ sudo make install
 \end{lstlisting}
 
 \begin{shaded}
@@ -393,9 +394,10 @@ If MPI is required, it should be also enabled using -DCHAMELEON\_USE\_MPI=ON.
 \begin{lstlisting}[language=bash]
 $ cd exageostat
 $ cd stars-h
-$ mkdir build 
+$ mkdir -p build
+$ cd build
 $ cmake .. -DCMAKE_C_FLAGS=-fPIC 
-$ make -j && make  install
+$ make -j && sudo make  install
 \end{lstlisting}
 
 
@@ -403,14 +405,13 @@ $ make -j && make  install
 \item
 \noindent Configuring and Building HiCMA library (optional):
 \begin{lstlisting}[language=bash]
-$ cd ..
-# mkdir build && cd build
-$ cmake ..  -DCMAKE_C_FLAGS=-fPIC -DCBLAS_DIR="${MKLROOT}" 
--DLAPACKE_DIR="${MKLROOT}"
--DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;
--lmkl_sequential;-lpthread;-lm;-ldl"
+$ cd exageostat
+$ cd hicma
+$ mkdir -p build
+$ cd build
+$ cmake .. -DBUILD_SHARED_LIBS=ON
 $ make 
-$ make  install
+$ sudo make install
 \end{lstlisting}
 \end{enumerate}
 
