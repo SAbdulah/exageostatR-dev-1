@@ -97,11 +97,11 @@ is dedicated to each operating system.
 \subsection{Supported Platforms}
 ExaGeoStatR has been tested and is supported on the following operating systems:
 
-\begin{enumerate}
-\item MacOS.
-\item Linux distributions.
+\begin{itemize}
+\item macOS
+\item Linux distributions
 %\item Cray XC40 systems.
-\end{enumerate}
+\end{itemize}
 
 \begin{shaded}
 {\textbf Note:} ExaGeoStat can be run practically on any Linux-like environment with a decent and fairly
@@ -111,22 +111,22 @@ up-to-date C++ compiler, for example gcc 5.x. Certain ExaGeoStat-R features (Den
 
 \subsection{Software Dependencies }
 \begin{enumerate}
-\item {\textbf {Portable Hardware Locality (hwloc):}} a software package provides a portable abstraction of the hierarchical topology of modern architectures.
-\item {\textbf {NLopt: a library for nonlinear optimization:}} providing a common interface for a number of different free optimization routines available online as well as original implementations of various other algorithms.
+\item {\textbf {Portable Hardware Locality (hwloc):}} a software package providing a portable abstraction of the hierarchical topology of modern architectures.
+\item {\textbf {NLopt: a library for nonlinear optimization}} providing a common interface for a number of different optimization routines freely available online as well as original implementations of various other algorithms.
 \item {\textbf {GNU Scientific Library (GSL):}} a collection of routines for numerical computing.
-\item {{\textbf StarPU:}} a task programming library for hybrid architectures.
-\item {{\textbf Chameleon:}} a dense linear algebra software relying on sequential task-based algorithms where sub-tasks of the overall algorithms are submitted to a runtime system.
-\item {{\textbf HiCMA:}} Hierarchical Computations on Manycore Architectures library, aims to redesign existing dense linear algebra libraries to exploit the data sparsity of the matrix operator.
-\item {{\textbf STARS-H:}} a High performance parallel open-source package of Software for Testing Accuracy, Reliability and Scalability of Hierarchical computations.
+\item {{\textbf {StarPU:}}} a dynamic runtime system library for task-based programming model running on shared/distributed-memory architectures as well as GPU-based systems.
+\item {{\textbf {Chameleon:}}} a dense linear algebra software relying on sequential task-based algorithms and a dynamic runtime system.
+\item {{\textbf {Hierarchical Computations on Manycore Architectures library (HiCMA):}}} a low-rank matrix computation library exploiting the data sparsity of the matrix operator.
+\item {{\textbf {Software for Testing Accuracy, Reliability and Scalability of Hierarchical computations (STARS-H):}}} a high performance low-rank matrix approximation library generating low-rank matrices on shared/distributed-memory systems.
 \end{enumerate}
 
 
 \newpage
 
 \section{Chapter 2. macOS}
-\subsection{Supported  Releases}
+\subsection{Supported Releases}
 This Chapter provides additional information for installing ExaGeoStat on macOS.
-The following release are covered:
+The following release is supported:
 \begin{enumerate}
 \item macOS high sierra 10.13.
 \end{enumerate}
@@ -354,7 +354,7 @@ $ make -j && make -j install
 
 
 \begin{shaded}
-{\textbf {StarPU Configuration:}} In the case of GPUs systems, both cuda and opencl should be enabled using -enable option.
+{\textbf {StarPU Configuration:}} In the case of GPUs systems, both CUDA and OpenCL should be enabled using -enable option.
 If MPI is required, it should be also enabled using -enable option.
 \end{shaded}
 
