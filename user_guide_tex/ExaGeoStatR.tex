@@ -242,7 +242,8 @@ $ make -j && make  install
 \noindent Configuring and Building HiCMA library (optional):
 \begin{lstlisting}[language=bash]
 $ cd ..
-# mkdir build && cd build
+$ mkdir -p build
+$ cd build
 $ cmake ..  -DCMAKE_C_FLAGS=-fPIC -DCBLAS_DIR="${MKLROOT}" 
 -DLAPACKE_DIR="${MKLROOT}"
 -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;
