@@ -10,7 +10,7 @@
  # @file test2.R
  # ExaGeoStat R wrapper test example
  #
- # @version 0.1.0
+ # @version 1.0.0
  #
  # @author Sameh Abdulah
  # @date 2018-07-04

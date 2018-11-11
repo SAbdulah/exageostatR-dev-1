@@ -30,10 +30,10 @@ library(exageostat)
 
 #### Get the latest ExaGeoStat-R release  hosted on GitHub
 
-1. Download exageostat_0.1.0.tar.gz from release
-2. Use R to install exageostat_0.1.0.tar.gz
+1. Download exageostat_1.0.0.tar.gz from release
+2. Use R to install exageostat_1.0.0.tar.gz
 ```r
-install.packages(repos=NULL, "exageostat_0.1.0.tar.gz")
+install.packages(repos=NULL, "exageostat_1.0.0.tar.gz")
 library(exageostat)
 ```
 
@@ -187,4 +187,19 @@ vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y
 theta_out       = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
 #Finalize exageostat instance
 exageostat_finalizeR()
+```
+Batch R script to distributed environment example
+=================================================
+```r
+#!/bin/bash
+#SBATCH --job-name=job_name
+#SBATCH --output=output_file.txt
+#SBATCH --partition=XXXX
+#SBATCH --nodes=4
+#SBATCH --ntasks=4
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=31
+#SBATCH --time 00:30:00
+
+srun Rscript Rtest.r
 ```

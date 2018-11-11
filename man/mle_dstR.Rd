@@ -35,6 +35,8 @@ exageostat_dstmleR(n,
   \item{ cub     }{ Double vector - optimizer upper bounds theta values }
   \item{ dst_thick }{ Integer - Diagonal Super-Tile (DST) diagonal thick }
   \item{ dmetric     }{ String - "dm" or "gcd" }
+  \item{ opt_tol         }{ Double - optimizer termination tolerance }
+  \item{ opt_max_iters   }{ Double - optimizer maximum number of iterations }
 }
 
 \value{
@@ -57,6 +59,8 @@ exageostat_dstmleR(n,
 #		theta,
 #		dst_thick,
 #		dmetric)
+#               opt_tol,
+#               opt_max_iters)
 }
 
 

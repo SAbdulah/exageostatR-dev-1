@@ -10,7 +10,7 @@
  # @file exageostat_test_wrapper.R
  # ExaGeoStat R wrapper functions
  #
- # @version 0.1.0
+ # @version 0.1.1
  #
  # @author Sameh Abdulah
  # @date 2018-07-04
