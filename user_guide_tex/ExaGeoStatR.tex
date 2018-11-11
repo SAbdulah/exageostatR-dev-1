@@ -140,7 +140,7 @@ $ wget  https://cmake.org/files/v3.12/cmake-3.12.4.tar.gz
 $ tar -zxvf cmake-3.12.4.tar.gz
 $ cd cmake-3.12.4
 $ ./configure --system-curl
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -157,7 +157,7 @@ $ wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
 $ tar -zxvf nlopt-2.4.2.tar.gz
 $ cd nlopt-2.4.2
 $ ./configure --enable-shared  --without-guile
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -167,7 +167,7 @@ $ wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
 $ tar -zxvf gsl-2.4.tar.gz
 $ cd gsl-2.4
 $ ./configure 
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -178,7 +178,7 @@ downloads/hwloc-1.11.5.tar.gz
 $ tar -zxvf hwloc-1.11.5.tar.gz
 $ cd hwloc-1.11.5
 $ ./configure
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 \item
@@ -189,7 +189,7 @@ starpu-1.2.5.tar.gz
 $ tar -zxvf starpu-1.2.5.tar.gz
 $ cd starpu-1.2.5
 $ ./configure  -disable-cuda -disable-mpi --disable-opencl
-$ make -j && make -j install
+$ make -j && sudo make -j install
 \end{lstlisting}
 
 %
@@ -219,7 +219,7 @@ $ cmake ..  -DCHAMELEON_USE_MPI=OFF -DBUILD_SHARED_LIBS=ON
 -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core; 
 -lmkl_sequential;-lpthread;-lm;-ldl"
 $ make 
-$ make install
+$ sudo make install
 \end{lstlisting}
 
 %\begin{shaded}
@@ -235,7 +235,7 @@ $ cd stars-h
 $ mkdir -p build
 $ cd build 
 $ cmake .. -DCMAKE_C_FLAGS=-fPIC 
-$ make -j && make  install
+$ sudo make -j && make  install
 \end{lstlisting}
 
 
@@ -249,13 +249,13 @@ $ mkdir -p build
 $ cd build
 $ cmake .. -DBUILD_SHARED_LIBS=ON
 $ make 
-$ make install
+$ sudo make install
 \end{lstlisting}
 \end{enumerate}
 
 
 \begin{shaded}
-{\textbf {Note:}} Here, we assume ROOT access during installation. if not, 
+{\textbf {Note:}} Here, we assume ROOT/SUDO access during installation. if not, 
 \begin{enumerate}
 \item -DCMAKE\_INSTALL\_PREFIX=\$PWD/installdir should be added to the $cmake$ commands, where $installdir$ is your local installation directory.
 \item --prefix=\$PWD/installdir should be added to the $configure$ commands, where $installdir$ is your local installation directory.
