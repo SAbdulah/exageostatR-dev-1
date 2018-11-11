@@ -176,6 +176,7 @@ $ make -j && make -j install
 $ wget https://www.open-mpi.org/software/hwloc/v1.11/
 downloads/hwloc-1.11.5.tar.gz
 $ tar -zxvf hwloc-1.11.5.tar.gz
+$ cd hwloc-1.11.5
 $./configure
 $ make -j && make -j install
 \end{lstlisting}
@@ -187,7 +188,7 @@ $ wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/
 starpu-1.2.5.tar.gz
 $ tar -zxvf starpu-1.2.5.tar.gz
 $ cd starpu-1.2.5
-$ ./configure  -disable-cuda -disable-mpi --disable-opencl
+$ ./configure  --disable-cuda --disable-mpi --disable-opencl
 $ make -j && make -j install
 \end{lstlisting}
 
@@ -202,7 +203,7 @@ $ make -j && make -j install
 \noindent Download Chameleon, HiCMA, and STARS-H,
 \begin{lstlisting}[language=bash]
 $ git clone https://github.com/ecrc/exageostat.git
-$ cd exageostat-dev
+$ cd exageostat
 $ git submodule update --init --recursive
 \end{lstlisting}
 
@@ -306,7 +307,7 @@ $ make -j && make -j install
 
 \item
 
-\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for macOS.
+\noindent Download an Install Intel MKL library from \url{https://software.intel.com/en-us/mkl} for Linux.
 
 %\noindent . /opt/intel/mkl/bin/mklvars.sh intel64
 \noindent \$ export MKLROOT=/opt/intel/mkl
@@ -337,6 +338,7 @@ $ make -j && make -j install
 $ wget https://www.open-mpi.org/software/hwloc/v1.11/
 downloads/hwloc-1.11.5.tar.gz
 $ tar -zxvf hwloc-1.11.5.tar.gz
+$ cd hwloc-1.11.5
 $./configure
 $ make -j && make -j install
 \end{lstlisting}
@@ -348,7 +350,7 @@ $ wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/
 starpu-1.2.5.tar.gz
 $ tar -zxvf starpu-1.2.5.tar.gz
 $ cd starpu-1.2.5
-$ ./configure  -disable-cuda -disable-mpi --disable-opencl
+$ ./configure  --disable-cuda --disable-mpi --disable-opencl
 $ make -j && make -j install
 \end{lstlisting}
 
@@ -363,7 +365,7 @@ If MPI is required, it should be also enabled using -enable option.
 \noindent Download Chameleon, HiCMA, and STARS-H,
 \begin{lstlisting}[language=bash]
 $ git clone https://github.com/ecrc/exageostat.git
-$ cd exageostat-dev
+$ cd exageostat
 $ git submodule update --init --recursive
 \end{lstlisting}
 
