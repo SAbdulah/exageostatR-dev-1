@@ -232,7 +232,8 @@ $ make install
 \begin{lstlisting}[language=bash]
 $ cd exageostat
 $ cd stars-h
-$ mkdir build 
+$ mkdir -p build
+$ cd build 
 $ cmake .. -DCMAKE_C_FLAGS=-fPIC 
 $ make -j && make  install
 \end{lstlisting}
