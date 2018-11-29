@@ -22,6 +22,30 @@ pipeline {
     }
 
     stages {
+        stage ('build-from-github') {
+            steps {
+                withCredentials([string(credentialsId: '549fe118-9b01-49f6-9072-a813312a022b', variable: 'GITHUB_PAT')]) {
+                    sh '''#!/bin/bash -le
+module purge
+module load ecrc-extras
+module load mkl/2018-update-1
+module load gcc/5.5.0
+module load pcre
+module load r-base/3.5.1-mkl
+
+module list
+set -x
+
+export MAKE='make -j 6 -l 8' # try to build in parallel
+
+_REPO=`git config --get remote.origin.url | cut -d "/" -f 4,5,6| sed 's/\\.git$//'`
+Rscript -e "Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv('PKG_CONFIG_PATH'),paste(.libPaths(),'exageostat/lib/pkgconfig',sep='/',collapse=':'),sep=':')); library(devtools); install_github(repo='$_REPO',ref='$BRANCH_NAME',auth_token='$GITHUB_PAT',quiet=FALSE);"
+
+Rscript tests/test1.R
+'''
+                }
+            }
+        }
         stage ('build-locally') {
             steps {
                 sh '''#!/bin/bash -le
@@ -48,30 +72,6 @@ R CMD INSTALL ./$package
 Rscript tests/test1.R
 
 '''
-            }
-        }
-        stage ('build-from-github') {
-            steps {
-                withCredentials([string(credentialsId: '549fe118-9b01-49f6-9072-a813312a022b', variable: 'GITHUB_PAT')]) {
-                    sh '''#!/bin/bash -le
-module purge
-module load ecrc-extras
-module load mkl/2018-update-1
-module load gcc/5.5.0
-module load pcre
-module load r-base/3.5.1-mkl
-
-module list
-set -x
-
-export MAKE='make -j 6 -l 8' # try to build in parallel
-
-_REPO=`git config --get remote.origin.url | cut -d "/" -f 4,5,6| sed 's/\\.git$//'`
-Rscript -e "Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv('PKG_CONFIG_PATH'),paste(.libPaths(),'exageostat/lib/pkgconfig',sep='/',collapse=':'),sep=':')); library(devtools); install_github(repo='$_REPO',ref='$BRANCH_NAME',auth_token='$GITHUB_PAT',quiet=FALSE);"
-
-Rscript tests/test1.R
-'''
-                }
             }
         }
     }
