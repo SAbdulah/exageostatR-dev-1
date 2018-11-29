@@ -40,6 +40,8 @@ module load starpu/1.2.6-gcc-5.5.0-mkl-openmpi-3.0.0
 module list
 set -x
 
+export MAKE='make -j 6 -l 8' # try to build in parallel
+
 R CMD build .
 package=$(ls -rt exa*z | tail -n 1)
 R CMD INSTALL ./$package
@@ -61,6 +63,8 @@ module load r-base/3.5.1-mkl
 
 module list
 set -x
+
+export MAKE='make -j 6 -l 8' # try to build in parallel
 
 _REPO=`git config --get remote.origin.url | cut -d "/" -f 4,5,6| sed 's/\\.git$//'`
 Rscript -e "Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv('PKG_CONFIG_PATH'),paste(.libPaths(),'exageostat/lib/pkgconfig',sep='/',collapse=':'),sep=':')); library(devtools); install_github(repo='$_REPO',ref='$BRANCH_NAME',auth_token='$GITHUB_PAT',quiet=FALSE);"
