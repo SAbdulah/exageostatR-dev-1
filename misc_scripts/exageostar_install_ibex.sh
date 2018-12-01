@@ -3,9 +3,14 @@ module load gcc/6.4.0
 module load cmake/3.9.4/intel-2017
 module load gsl/2.4/gnu-6.4.0
 module load r/3.4.2
+
+
+
 SETUP_DIR=$PWD
+
 MKLROOT=/sw/csi/intel/2017/compilers_and_libraries/linux/mkl
 rm -rf exageostatr
+rm -rf $SETUP_DIR/pkg_config.sh
 ==============================
 cd $SETUP_DIR
 if [ ! -d "nlopt-2.4.2" ]; then
@@ -20,6 +25,10 @@ make -j install
 NLOPTROOT=$PWD
 export PKG_CONFIG_PATH=$NLOPTROOT/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH
   export LD_LIBRARY_PATH=$NLOPTROOT/nlopt_install/lib:$LD_LIBRARY_PATH
+
+    echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/nlopt_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> $SETUP_DIR/pkg_config.sh
+    echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/nlopt_install/lib:$LD_LIBRARY_PATH' >> $SETUP_DIR/pkg_config.sh
+
 ================================
 cd $SETUP_DIR
 if [  ! -d "hwloc-2.0.2" ]; then
@@ -35,6 +44,8 @@ make -j install
 HWLOCROOT=$PWD
 export PKG_CONFIG_PATH=$HWLOCROOT/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$HWLOCROOT/hwloc_install/lib:$LD_LIBRARY_PATH
+echo 'export PKG_CONFIG_PATH='$HWLOCROOT'/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$LD_LIBRARY_PATH' >> $SETUP_DIR/pkg_config.sh
 ================================
 cd $SETUP_DIR
 if [ ! -d "starpu-1.2.6" ]; then
@@ -50,6 +61,9 @@ STARPUROOT=$PWD
 export PKG_CONFIG_PATH=$STARPUROOT/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$STARPUROOT/starpu_install/lib:$LD_LIBRARY_PATH
 export CPATH=$STARPUROOT/starpu_install/include/starpu/1.2:$CPATH
+echo 'export PKG_CONFIG_PATH='$STARPUROOT'/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$STARPUROOT'/starpu_install/lib:$LD_LIBRARY_PATH' >> $SETUP_DIR/pkg_config.sh
+echo 'export CPATH='$STARPUROOT'/starpu_install/include/starpu/1.2:$CPATH' >> $SETUP_DIR/pkg_config.sh
 #************************************************************************ Install Chameleon - Stars-H - HiCMA
 cd $SETUP_DIR
 # Check if we are already in exageostat repo dir or not.
@@ -89,6 +103,9 @@ make install
 export PKG_CONFIG_PATH=$STARSHDIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$STARSHDIR/build/install_dir/lib:$LD_LIBRARY_PATH
 
+echo 'export PKG_CONFIG_PATH='$STARSHDIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >> $SETUP_DIR/pkg_config.sh
+echo 'export PKG_CONFIG_PATH='$STARSHDIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+
 
 ## CHAMELEON
 cd $CHAMELEONDIR
@@ -106,6 +123,11 @@ export PKG_CONFIG_PATH=$CHAMELEONDIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG
 export LD_LIBRARY_PATH=$CHAMELEONDIR/build/install_dir/lib:$LD_LIBRARY_PATH
 export CPATH=$CHAMELEONDIR/build/install_dir/include/coreblas:$CPATH
 
+
+echo 'export PKG_CONFIG_PATH='$CHAMELEONDIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH'  >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$CHAMELEONDIR'/build/install_dir/lib:$LD_LIBRARY_PATH'  >>  $SETUP_DIR/pkg_config.sh
+echo 'export CPATH='$CHAMELEONDIR'/build/install_dir/include/coreblas:$CPATH'  >>  $SETUP_DIR/pkg_config.sh
+
 ## HICMA
 cd $HICMADIR
 rm -rf build
@@ -120,8 +142,18 @@ make install
 export PKG_CONFIG_PATH=$HICMADIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$HICMADIR/build/install_dir/lib:$LD_LIBRARY_PATH
 
+
+echo 'export PKG_CONFIG_PATH='$HICMADIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$HICMADIR'/build/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
+
 cd $SETUP_DIR
 R CMD build exageostatr
 R CMD INSTALL exageostat_1.0.0.tar.gz
 export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
 
+echo 'module load intel/2017' >> $SETUP_DIR/pkg_config.sh
+echo 'module load gcc/6.4.0' >> $SETUP_DIR/pkg_config.sh
+echo 'module load cmake/3.9.4/intel-2017' >> $SETUP_DIR/pkg_config.sh
+echo 'module load gsl/2.4/gnu-6.4.0' >> $SETUP_DIR/pkg_config.sh
+echo 'module load r/3.4.2' >> $SETUP_DIR/pkg_config.sh
+echo 'export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so' >>  $SETUP_DIR/pkg_config.sh
