@@ -9,8 +9,13 @@ module switch PrgEnv-cray PrgEnv-gnu
 #==========
 module load intel/18.0.1.163
 
+cd ..
+git submodule update --init
+cd ..
+mkdir installation_dir
+cd installation_dir
 SETUP_DIR=$PWD
-rm -rf exageostatr
+rm -rf *
 ==============================
 cd $SETUP_DIR
 if [ ! -d "nlopt-2.5.0" ]; then
@@ -28,6 +33,9 @@ make -j install
 NLOPTROOT=$PWD
 export PKG_CONFIG_PATH=$NLOPTROOT/install_dir/lib64/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$NLOPTROOT/install_dir/lib64:$LD_LIBRARY_PATH
+
+echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/install_dir/lib64/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/install_dir/lib64:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 #export CPATH=$NLOPTROOT/install_dir/include:$CPATH
 ================================
 cd $SETUP_DIR
@@ -44,6 +52,9 @@ make -j install
 HWLOCROOT=$PWD
 export PKG_CONFIG_PATH=$HWLOCROOT/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$HWLOCROOT/hwloc_install/lib:$LD_LIBRARY_PATH
+
+echo 'export PKG_CONFIG_PATH='$HWLOCROOT'/hwloc_install/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 ================================
 cd $SETUP_DIR
 if [ ! -d "starpu-1.2.6" ]; then
@@ -59,6 +70,9 @@ STARPUROOT=$PWD
 export PKG_CONFIG_PATH=$STARPUROOT/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$STARPUROOT/starpu_install/lib:$LD_LIBRARY_PATH
 export CPATH=$STARPUROOT/starpu_install/include:$CPATH
+echo 'export PKG_CONFIG_PATH='$STARPUROOT'/starpu_install/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$STARPUROOT'/starpu_install/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export CPATH='$STARPUROOT'/starpu_install/include:$CPATH' >>  $SETUP_DIR/pkg_config.sh
 #************************************************************************ Install Chameleon - Stars-H - HiCMA
 cd $SETUP_DIR
 # Check if we are already in exageostat repo dir or not.
@@ -92,7 +106,10 @@ CFLAGS=-fPIC cmake .. -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc -DCMAKE_Fort
 make -j
 make install
 export PKG_CONFIG_PATH=$STARSHDIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH=$STARSHDIR/build/install_dir/lib/pkgconfig:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$STARSHDIR/build/install_dir/lib:$LD_LIBRARY_PATH
+
+echo 'export PKG_CONFIG_PATH='$STARSHDIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$STARSHDIR'/build/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 
 ## CHAMELEON
 cd $CHAMELEONDIR
@@ -110,6 +127,10 @@ export PKG_CONFIG_PATH=$CHAMELEONDIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG
 export LD_LIBRARY_PATH=$CHAMELEONDIR/build/install_dir/lib/:$LD_LIBRARY_PATH
 export CPATH=$CHAMELEONDIR/build/install_dir/include/coreblas:$CPATH
 
+echo 'export PKG_CONFIG_PATH='$CHAMELEONDIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$CHAMELEONDIR'/build/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export CPATH='$CHAMELEONDIR'/build/install_dir/include/coreblas:$CPATH' >>  $SETUP_DIR/pkg_config.sh
+
 ## HICMA
 cd $HICMADIR
 rm -rf build
@@ -124,20 +145,23 @@ make install
 
 export PKG_CONFIG_PATH=$HICMADIR/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$HICMADIR/build/install_dir/lib/:$LD_LIBRARY_PATH
+echo 'export PKG_CONFIG_PATH='$HICMADIR'/build/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$HICMADIR'/build/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 
-$SETUP_DIR
+cd $SETUP_DIR
 #export CPATH=$CPATH:/usr/local/include/coreblas && \
 #export LD_LIBRARY_PATH="${MKLROOT}/lib/intel64_lin:$LD_LIBRARY_PATH" && \
 #export LIBRARY_PATH="$LD_LIBRARY_PATH"
 
 ## Modify src/Makefile, compilation flagss -> flagsl
-
-
-
 module load gsl/2.4
-module load cray-netcdf
-module load cray-hdf5
-
- module swap PrgEnv-gnu PrgEnv-cray
- module load r/3.4.3
- module swap PrgEnv-intel PrgEnv-gnu
+echo 'module load  cmake/3.10.2' >> $SETUP_DIR/pkg_config.sh
+echo 'export LC_ALL=en_US.UTF-8' >> $SETUP_DIR/pkg_config.sh
+echo 'export CRAYPE_LINK_TYPE=dynamic' >> $SETUP_DIR/pkg_config.sh
+echo 'module switch PrgEnv-cray PrgEnv-gnu' >> $SETUP_DIR/pkg_config.sh
+echo 'module load  intel/18.0.1.163' >> $SETUP_DIR/pkg_config.sh
+echo 'module load  gsl/2.4' >> $SETUP_DIR/pkg_config.sh
+#module load R
+#mkdir install_dir
+#R CMD build exageostatR-dev
+#R CMD INSTALL exageostat-1.0.0.tar.gz -l ./install_dir
