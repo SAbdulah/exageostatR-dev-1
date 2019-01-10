@@ -18,24 +18,24 @@ SETUP_DIR=$PWD
 rm -rf *
 ==============================
 cd $SETUP_DIR
-if [ ! -d "nlopt-2.5.0" ]; then
-        wget  https://github.com/stevengj/nlopt/archive/v2.5.0.tar.gz
-        tar -zxvf v2.5.0.tar.gz
+if [ ! -d "nlopt-2.4.2" ]; then
+        wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz
+        tar -zxvf nlopt-2.4.2.tar.gz
 fi
-cd nlopt-2.5.0
-rm -rf build
-mkdir -p build/install_dir
-cd build
+cd nlopt-2.4.2
 
-cmake .. -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc -DCMAKE_INSTALL_PREFIX=$PWD/install_dir/ -DBUILD_SHARED_LIBS=ON -DNLOPT_GUILE=OFF
+[[ -d nlopt_install ]] || mkdir nlopt_install
+
+CC=gcc ./configure --prefix=$PWD/install_dir/ --enable-shared --without-guile
+	
 make -j
 make -j install
 NLOPTROOT=$PWD
-export PKG_CONFIG_PATH=$NLOPTROOT/install_dir/lib64/pkgconfig:$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH=$NLOPTROOT/install_dir/lib64:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$NLOPTROOT/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$NLOPTROOT/install_dir/lib:$LD_LIBRARY_PATH
 
-echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/install_dir/lib64/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
-echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/install_dir/lib64:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export PKG_CONFIG_PATH='$NLOPTROOT'/install_dir/lib/pkgconfig:$PKG_CONFIG_PATH' >>  $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$NLOPTROOT'/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 #export CPATH=$NLOPTROOT/install_dir/include:$CPATH
 ================================
 cd $SETUP_DIR
@@ -161,6 +161,7 @@ echo 'export CRAYPE_LINK_TYPE=dynamic' >> $SETUP_DIR/pkg_config.sh
 echo 'module switch PrgEnv-cray PrgEnv-gnu' >> $SETUP_DIR/pkg_config.sh
 echo 'module load  intel/18.0.1.163' >> $SETUP_DIR/pkg_config.sh
 echo 'module load  gsl/2.4' >> $SETUP_DIR/pkg_config.sh
+cd ..
 #module load R
 #mkdir install_dir
 #R CMD build exageostatR-dev
