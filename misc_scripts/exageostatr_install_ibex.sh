@@ -1,11 +1,15 @@
 module load intel/2017
+#module load gcc/8.1.0
 module load gcc/6.4.0
-module load cmake/3.9.4/intel-2017
-module load gsl/2.4/gnu-6.4.0
-module load r/3.4.2
-
-
-
+module load cmake/3.9.4/gnu-6.4.0
+module load mpich/3.3/gnu-6.4.0
+#/intel-2017
+module load R/3.5.0/gnu-6.4.0
+mkdir -p $R_LIBS
+cd ..
+cd ..
+mkdir installation_dir
+cd installation_dir
 SETUP_DIR=$PWD
 
 MKLROOT=/sw/csi/intel/2017/compilers_and_libraries/linux/mkl
@@ -48,13 +52,30 @@ echo 'export PKG_CONFIG_PATH='$HWLOCROOT'/hwloc_install/lib/pkgconfig:$PKG_CONFI
 echo 'export LD_LIBRARY_PATH='$HWLOCROOT'/hwloc_install/lib:$LD_LIBRARY_PATH' >> $SETUP_DIR/pkg_config.sh
 ================================
 cd $SETUP_DIR
-if [ ! -d "starpu-1.2.6" ]; then
-        wget http://starpu.gforge.inria.fr/files/starpu-1.2.6/starpu-1.2.6.tar.gz
-        tar -zxvf starpu-1.2.6.tar.gz
+if [ ! -d "gsl-2.4" ]; then
+        wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz
+        tar -zxvf gsl-2.4.tar.gz
 fi
-cd starpu-1.2.6
+cd gsl-2.4
+[[ -d gsl_install ]] || mkdir gsl_install
+CC=gcc ./configure --prefix=$PWD/gsl_install/
+make -j
+make -j install
+GSLROOT=$PWD
+export PKG_CONFIG_PATH=$GSLROOT/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$GSLROOT/gsl_install/lib:$LD_LIBRARY_PATH
+
+echo 'export PKG_CONFIG_PATH='$GSLROOT'/gsl_install/lib/pkgconfig:$PKG_CONFIG_PATH' >> $SETUP_DIR/pkg_config.sh
+echo 'export LD_LIBRARY_PATH='$GSLROOT'/gsl_install/lib:$LD_LIBRARY_PATH' >> $SETUP_DIR/pkg_config.sh
+================================
+cd $SETUP_DIR
+if [ ! -d "starpu-1.2.5" ]; then
+        wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/starpu-1.2.5.tar.gz
+        tar -zxvf starpu-1.2.5.tar.gz
+fi
+cd starpu-1.2.5
 [[ -d starpu_install ]] || mkdir starpu_install
-CC=gcc  ./configure --prefix=$SETUP_DIR/starpu-1.2.6/starpu_install  -disable-cuda --disable-opencl --with-mpicc=/opt/share/intel/2017/compilers_and_libraries/linux/mpi/intel64/bin/mpicc
+CC=gcc  ./configure --prefix=$SETUP_DIR/starpu-1.2.5/starpu_install  -disable-cuda --disable-opencl --with-mpicc=/opt/share/intel/2017/compilers_and_libraries/linux/mpi/intel64/bin/mpicc --enable-shared --disable-build-doc --disable-export-dynamic --disable-mpi-check
 make -j
 make -j  install
 STARPUROOT=$PWD
@@ -114,7 +135,7 @@ mkdir -p build/install_dir
 cd build
 
 
-CC=gcc cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/install_dir  -DCMAKE_COLOR_MAKEFILE:BOOL=ON -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_SHARED_LIBS=ON -DCHAMELEON_ENABLE_EXAMPLE=ON -DCHAMELEON_ENABLE_TESTING=ON -DCHAMELEON_ENABLE_TIMING=ON -DCHAMELEON_USE_MPI=ON -DCHAMELEON_USE_CUDA=OFF -DCHAMELEON_USE_MAGMA=OFF -DCHAMELEON_SCHED_QUARK=OFF -DCHAMELEON_SCHED_STARPU=ON -DCHAMELEON_USE_FXT=OFF -DSTARPU_DIR=$STARPUROOT/starpu_install -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DBLAS_COMPILER_FLAGS="-m64;-I${MKLROOT}/include" -DLAPACK_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}" -DTMG_DIR="${MKLROOT}" -DMORSE_VERBOSE_FIND_PACKAGE=ON -DMPI_C_COMPILER=/opt/share/intel/2017/compilers_and_libraries/linux/mpi/intel64/bin/mpicc
+CC=gcc cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/install_dir  -DCMAKE_COLOR_MAKEFILE:BOOL=ON -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_SHARED_LIBS=ON -DCHAMELEON_ENABLE_EXAMPLE=ON -DCHAMELEON_ENABLE_TESTING=ON -DCHAMELEON_ENABLE_TIMING=ON -DCHAMELEON_USE_MPI=ON -DCHAMELEON_USE_CUDA=OFF -DCHAMELEON_USE_MAGMA=OFF -DCHAMELEON_SCHED_QUARK=OFF -DCHAMELEON_SCHED_STARPU=ON -DCHAMELEON_USE_FXT=OFF -DSTARPU_DIR=$STARPUROOT/starpu_install -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DBLAS_COMPILER_FLAGS="-m64;-I${MKLROOT}/include" -DLAPACK_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}" -DTMG_DIR="${MKLROOT}" -DMORSE_VERBOSE_FIND_PACKAGE=ON -DMPI_C_COMPILER=/sw/csis/mpich/3.3/el7.5_gnu6.4.0/bin/mpicc
 
 make -j # CHAMELEON parallel build seems to be fixed
 make install
@@ -134,8 +155,7 @@ rm -rf build
 mkdir -p build/install_dir
 cd build
 ===============
-CC=gcc cmake ..  -DCMAKE_INSTALL_PREFIX=$PWD/install_dir -DCMAKE_COLOR_MAKEFILE:BOOL=ON -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_SHARED_LIBS=ON -DHICMA_USE_MPI=ON  -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DBLAS_COMPILER_FLAGS="-m64;-I${MKLROOT}/include" -DLAPACK_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}" -DTMG_DIR="${MKLROOT}" -DMORSE_VERBOSE_FIND_PACKAGE=ON -DMPI_C_COMPILER=
-/opt/share/intel/2017/compilers_and_libraries/linux/mpi/intel64/bin/mpicc
+CC=gcc cmake ..  -DCMAKE_INSTALL_PREFIX=$PWD/install_dir -DCMAKE_COLOR_MAKEFILE:BOOL=ON -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_SHARED_LIBS=ON -DHICMA_USE_MPI=ON  -DBLAS_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DBLAS_COMPILER_FLAGS="-m64;-I${MKLROOT}/include" -DLAPACK_LIBRARIES="-L${MKLROOT}/lib;-lmkl_intel_lp64;-lmkl_core;-lmkl_sequential;-lpthread;-lm;-ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}" -DTMG_DIR="${MKLROOT}" -DMORSE_VERBOSE_FIND_PACKAGE=ON -DMPI_C_COMPILER=/sw/csis/mpich/3.3/el7.5_gnu6.4.0/bin/mpicc
 make -j
 make install
 
@@ -147,13 +167,13 @@ echo 'export PKG_CONFIG_PATH='$HICMADIR'/build/install_dir/lib/pkgconfig:$PKG_CO
 echo 'export LD_LIBRARY_PATH='$HICMADIR'/build/install_dir/lib:$LD_LIBRARY_PATH' >>  $SETUP_DIR/pkg_config.sh
 
 cd $SETUP_DIR
-R CMD build exageostatr
-R CMD INSTALL exageostat_1.0.0.tar.gz
+#R CMD build exageostatr
+#R CMD INSTALL exageostat_1.0.0.tar.gz
 export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
 
 echo 'module load intel/2017' >> $SETUP_DIR/pkg_config.sh
 echo 'module load gcc/6.4.0' >> $SETUP_DIR/pkg_config.sh
-echo 'module load cmake/3.9.4/intel-2017' >> $SETUP_DIR/pkg_config.sh
-echo 'module load gsl/2.4/gnu-6.4.0' >> $SETUP_DIR/pkg_config.sh
-echo 'module load r/3.4.2' >> $SETUP_DIR/pkg_config.sh
+echo 'module load cmake/3.9.4/gnu-6.4.0' >> $SETUP_DIR/pkg_config.sh
+echo 'module load mpich/3.3/gnu-6.4.0' >> $SETUP_DIR/pkg_config.sh
+echo 'module load R/3.5.0/gnu-6.4.0' >> $SETUP_DIR/pkg_config.sh
 echo 'export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so' >>  $SETUP_DIR/pkg_config.sh
