@@ -75,7 +75,7 @@ if [ ! -d "starpu-1.2.5" ]; then
 fi
 cd starpu-1.2.5
 [[ -d starpu_install ]] || mkdir starpu_install
-CC=gcc  ./configure --prefix=$SETUP_DIR/starpu-1.2.5/starpu_install  -disable-cuda --disable-opencl --with-mpicc=/opt/share/intel/2017/compilers_and_libraries/linux/mpi/intel64/bin/mpicc --enable-shared --disable-build-doc --disable-export-dynamic --disable-mpi-check
+CC=gcc  ./configure --prefix=$SETUP_DIR/starpu-1.2.5/starpu_install  -disable-cuda --disable-opencl --with-mpicc=/sw/csis/mpich/3.3/el7.5_gnu6.4.0/bin/mpicc --enable-shared --disable-build-doc --disable-export-dynamic --disable-mpi-check
 make -j
 make -j  install
 STARPUROOT=$PWD
