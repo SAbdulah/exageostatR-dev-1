@@ -13,7 +13,7 @@
  # @version 1.0.0
  #
  # @author Sameh Abdulah
- # @date 2018-07-04
+ # @date 2019-01-17
 library("exageostat")                                                   #Load ExaGeoStat-R lib.
 theta1          = 1                                                     #Initial variance.
 theta2          = 0.1                                                   #Initial smoothness.
@@ -39,8 +39,8 @@ theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
 exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector based on given locations
-vecs_out        = exageostat_egenz_glR(n, ncores, gpus, ts, p_grid, q_grid, x, y, theta1, theta2, theta3, dmetric,  globalveclen)
+vecs_out        = exageostat_egenz_glR( x, y, theta1, theta2, theta3, dmetric, n, ncores, gpus, ts, p_grid, q_grid, globalveclen)
 #Estimate MLE parameters (Exact)
-theta_out       = exageostat_emleR(n, ncores, gpus, ts, p_grid, q_grid,  x,  y,  vecs_out, clb, cub, dmetric, 0.0001, 20)
+theta_out       = exageostat_emleR( x,  y,  vecs_out, clb, cub, dmetric, n, 0.0001, 20, ncores, gpus, ts, p_grid, q_grid)
 #Finalize exageostat instance
 exageostat_finalizeR()

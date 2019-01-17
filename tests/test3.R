@@ -1,19 +1,19 @@
- #
- #
- # Copyright (c) 2017, King Abdullah University of Science and Technology
- # All rights reserved.
- #
- # ExaGeoStat-R is a software package provided by KAUST
- #
- #
- #
- # @file test2.R
- # ExaGeoStat R wrapper test example
- #
- # @version 1.0.0
- #
- # @author Sameh Abdulah
- # @date 2018-07-04
+#
+#
+# Copyright (c) 2017, King Abdullah University of Science and Technology
+# All rights reserved.
+#
+# ExaGeoStat-R is a software package provided by KAUST
+#
+#
+#
+# @file test2.R
+# ExaGeoStat R wrapper test example
+#
+# @version 1.0.0
+#
+# @author Sameh Abdulah
+# @date 2019-01-17
 library("exageostat")                                           #Load ExaGeoStat-R lib.
 seed            = 0                                             #Initial seed to generate XY locs.
 theta1          = 1                                             #Initial variance.
@@ -39,8 +39,8 @@ theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
 exageostat_initR(ncores, gpus, ts)
 #Generate Z observation vector
-vecs_out        = exageostat_egenzR(n, ncores, gpus, ts, p_grid, q_grid, theta1, theta2, theta3, dmetric, seed, globalveclen)
+vecs_out        = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed, ncores, gpus, dts, p_grid, q_grid,  globalveclen)
 #Estimate MLE parameters (DST approximation)
-theta_out       = exageostat_dstmleR(n, ncores, gpus, ts, p_grid, q_grid,  vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, 0.0001, 20)
+theta_out       = exageostat_dstmleR(vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], clb, cub, dst_thick,  dmetric, n, 0.0001, 20, ncores, gpus, ts, p_grid, q_grid)
 #Finalize exageostat instance
 exageostat_finalizeR()
