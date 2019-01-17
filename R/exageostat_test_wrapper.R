@@ -162,7 +162,7 @@ Test4 <- function()
 		browser()
 }
 
-exageostat_egenzR <- function(theta1, theta2, theta3, dmetric, n, seed, ncores, gpus, ts, p_grid, q_grid, globalveclen)
+exageostat_egenzR <- function(theta1, theta2, theta3, dmetric = 0, n, seed = 0, ncores = 1, gpus = 0, ts = 320, p_grid = 1, q_grid = 1, globalveclen)
 {
 	globalvec  = vector (mode="double", length = globalveclen)
 		globalvec2 = .C("gen_z_exact",
@@ -186,7 +186,7 @@ exageostat_egenzR <- function(theta1, theta2, theta3, dmetric, n, seed, ncores, 
 }
 
 
-exageostat_egenz_glR <- function(x, y, theta1, theta2, theta3, dmetric, n, ncores, gpus, ts, p_grid, q_grid, globalveclen)
+exageostat_egenz_glR <- function(x, y, theta1, theta2, theta3, dmetric = 0, n, ncores = 1, gpus = 0, ts = 320, p_grid = 1, q_grid = 1, globalveclen)
 {
 	globalvec  = vector (mode="double", length = globalveclen)
 		globalvec2 = .C("gen_z_givenlocs_exact",
@@ -212,7 +212,7 @@ exageostat_egenz_glR <- function(x, y, theta1, theta2, theta3, dmetric, n, ncore
 }
 
 
-exageostat_emleR <- function( x, y, z, clb, cub, dmetric, n, opt_tol, opt_max_iters, ncores, gpus, ts, p_grid, q_grid)
+exageostat_emleR <- function( x, y, z, dmetric = 0, n, clb, cub, opt_tol = 1e-5, opt_max_iters = 100, ncores = 1, gpus = 0, ts = 320, p_grid = 1, q_grid = 1 )
 {
 	theta_out2 = .C("mle_exact",
 			as.double(x),
@@ -234,13 +234,14 @@ exageostat_emleR <- function( x, y, z, clb, cub, dmetric, n, opt_tol, opt_max_it
 			as.integer(ts),
 			as.integer(p_grid),
 			as.integer(q_grid),
-			theta_out=double(3))$theta_out		
-				theta_out[1:3] <- theta_out2[1:3]
-				print("back from mle_exact C function call. Hit key....")
-				return(theta_out)
+			theta_out=double(6))$theta_out		
+	theta_out[1:6] <- theta_out2[1:6]
+	print("back from mle_exact C function call. Hit key....")
+	newList <- list("sigma_sq" = theta_out2[1], "beta" = theta_out2[2],"nu" = theta_out2[3],"time_per_iter" = theta_out2[4], "total_time" = theta_out2[5], "no_iters" = theta_out2[6])
+	return(newList)
 }
 
-exageostat_tlrmleR <- function( x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric, n, opt_tol, opt_max_iters, ncores, gpus, ts, p_grid, q_grid)
+exageostat_tlrmleR <- function( x, y, z, tlr_acc = 9, tlr_maxrank = 400, dmetric = 0, n, clb, cub, opt_tol = 1e-5, opt_max_iters = 100, ncores = 1, gpus = 0, ts = 320, p_grid = 1, q_grid = 1)
 {
 	theta_out2 = .C("mle_tlr",
 			as.double(x),
@@ -264,14 +265,15 @@ exageostat_tlrmleR <- function( x, y, z, clb, cub, tlr_acc, tlr_maxrank, dmetric
 			as.integer(ts),
 			as.integer(p_grid),
 			as.integer(q_grid),
-			theta_out=double(3))$theta_out
-				theta_out[1:3] <- theta_out2[1:3]
-				print("back from mle_tlr C function call. Hit key....")
-				return(theta_out)
+                        theta_out=double(6))$theta_out
+        theta_out[1:6] <- theta_out2[1:6]
+        print("back from mle_exact C function call. Hit key....")
+        newList <- list("sigma_sq" = theta_out2[1], "beta" = theta_out2[2],"nu" = theta_out2[3],"time_per_iter" = theta_out2[4], "total_time" = theta_out2[5], "no_iters" = theta_out2[6])
+        return(newList)
 }
 
 
-exageostat_dstmleR <- function(x, y, z, clb, cub, dst_thick, dmetric, n, opt_tol, opt_max_iters, ncores, gpus, ts, p_grid, q_grid)
+exageostat_dstmleR <- function(x, y, z, dst_thick, dmetric = 0, n, clb, cub, opt_tol = 1e-5, opt_max_iters = 100, ncores = 1, gpus = 0, ts = 320, p_grid = 1, q_grid = 1)
 {
 	theta_out2 = .C("mle_dst",
 			as.double(x),
@@ -294,10 +296,11 @@ exageostat_dstmleR <- function(x, y, z, clb, cub, dst_thick, dmetric, n, opt_tol
 			as.integer(ts),
 			as.integer(p_grid),
 			as.integer(q_grid),
-			theta_out=double(3))$theta_out
-				theta_out[1:3] <- theta_out2[1:3]
-				print("back from mle_dst C function call. Hit key....")
-				return(theta_out)
+                        theta_out=double(6))$theta_out
+        theta_out[1:6] <- theta_out2[1:6]
+        print("back from mle_exact C function call. Hit key....")
+        newList <- list("sigma_sq" = theta_out2[1], "beta" = theta_out2[2],"nu" = theta_out2[3],"time_per_iter" = theta_out2[4], "total_time" = theta_out2[5], "no_iters" = theta_out2[6])
+        return(newList)
 }
 
 
