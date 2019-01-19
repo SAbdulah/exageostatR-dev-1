@@ -21,27 +21,13 @@ theta2          = 0.03                                          #Initial smoothn
 theta3          = 0.5                                           #Initial range.
 dmetric         = 0                                             #0 --> Euclidean distance, 1--> great circle distance.
 n               = 900                                           #n*n locations grid.
-ncores          = 4                                             #Number of underlying CPUs.
-gpus            = 0                                             #Number of underlying GPUs.
-ts             = 320                                           #Tile_size:  changing it can improve the performance. No fixed value can be given.
-p_grid          = 1                                             #More than 1 in the case of distributed systems.
-q_grid          = 1                                             #More than 1 in the case of distributed systems ( usually equals to p_grid).
-clb             = vector(mode="double", length = 3)            #Optimization function lower bounds values.
-cub             = vector(mode="double", length = 3)            #Optimization function upper bounds values.
-theta_out       = vector(mode="double", length = 3)            #Parameter vector output.
-globalveclen    = 3*n
-vecs_out        = vector(mode="double", length = globalveclen) #Z measurements of n locations.
-clb             = as.double(c("0.01", "0.01", "0.01"))         #Optimization lower bounds.
-cub             = as.double(c("5.00", "5.00", "5.00"))         #Optimization upper bounds.
 dst_thick       = 3                                             #Number of used Diagonal Super Tile (DST).
-vecs_out[1:globalveclen]        = -1.99
-theta_out[1:3]                  = -1.99
 #Initiate exageostat instance
-exageostat_initR(ncores, gpus, ts)
+exageostat_initR(hardware = list (ncores=4, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))
 #Generate Z observation vector
-vecs_out        = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed, ncores, gpus, ts, p_grid, q_grid,  globalveclen)
+data      = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (DST approximation)
-result       = exageostat_dstmleR(vecs_out[1:n],  vecs_out[n+1:(2*n)],  vecs_out[(2*n+1):(3*n)], dst_thick,  dmetric, n, clb, cub, 0.0001, 20, ncores, gpus, ts, p_grid, q_grid)
+result       = exageostat_dstmleR(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
 exageostat_finalizeR()
