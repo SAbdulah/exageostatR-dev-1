@@ -85,7 +85,7 @@ Test3 <- function()
 		result       = exageostat_dstmleR(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-		exageostat_finalizeR()browser()
+		exageostat_finalizeR()
 		browser()
 }
 

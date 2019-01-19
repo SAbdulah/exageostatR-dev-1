@@ -66,7 +66,7 @@ n               = 1600                                          #n*n locations g
 #theta_out[1:3]                  = -1.99
 exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data      = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed) #Generate Z observation vector
+data          = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed) #Generate Z observation vector
 #Estimate MLE parameters (Exact)
 result        = exageostat_emleR(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 
@@ -90,7 +90,7 @@ tlr_maxrank     = 450                                           #Max Rank
 #Initiate exageostat instance
 exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, lts=600,  pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data      = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed) #Generate Z observation vecto
+data         = exageostat_egenzR(theta1, theta2, theta3, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (TLR approximation)
 result       = exageostat_tlrmleR(data, tlr_acc, tlr_maxrank,  dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
