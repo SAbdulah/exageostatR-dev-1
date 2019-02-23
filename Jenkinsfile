@@ -77,6 +77,35 @@ Rscript tests/test1.R
 '''
             }
         }
+        stage ('build-gpu') {
+            agent { label 'jenkinsfile-gpu' }
+            steps {
+                sh '''#!/bin/bash -le
+module purge
+module load ecrc-extras
+module load mkl/2018-update-1
+module load gcc/5.5.0
+module load pcre
+module load r-base/3.5.1-mkl
+module load cuda/10.0
+
+
+module list
+set -x
+
+export MAKE='make -j 6 -l 8' # try to build in parallel
+
+# export PKG_CONFIG_PATH
+$(Rscript -e '.libPaths()' | gawk 'BEGIN {printf "export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"}; {printf "%s/exageostat/lib/pkgconfig:",substr($2,2,length($2)-2)};')
+
+R CMD build .
+package=$(ls -rt exa*z | tail -n 1)
+R CMD INSTALL --configure-args='--enable-cuda' ./$package
+Rscript tests/test1.R
+
+'''
+            }
+        }
     }
 
     // Post build actions
