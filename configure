@@ -11,6 +11,9 @@ TMPDIR=$BASEDIR/_$$
 BUILD_DEPENDENCIES='true'
 err=0
 
+CUDAVALUE="OFF"
+MPIVALUE="OFF"
+
 
 mkdir -p $TMPDIR
 
@@ -24,6 +27,10 @@ print_usage() {
 while [ -n "$1"  ]
 do
     case "$1" in
+        --enable-cuda)
+            CUDAVALUE="ON"
+            shift
+            ;;
         --enable-mpi)
             MPIVALUE="ON"
             shift
@@ -238,7 +245,11 @@ else
         cd $TMPDIR
         wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/starpu-1.2.5.tar.gz -O - | tar -zx
         cd starpu-1.2.5
-        ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
+        if [ "$CUDAVALUE" == "ON" ]; then
+            ./configure --enable-cuda --disable-opencl --prefix=$PREFIX
+        else
+            ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
+        fi
         make -j || make && make install
     else
         echo "####################"
@@ -263,7 +274,7 @@ else
         echo "Building CHAMELEON..."
         cd $BASEDIR/src/hicma/chameleon
         mkdir -p build && cd build
-        cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
+        cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
         make -j 20 || make VERBOSE=1 && make install
     else
         echo "####################"
