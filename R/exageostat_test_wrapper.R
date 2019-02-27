@@ -271,27 +271,39 @@ exageostat_dstmleR <- function(data = list (x, y, z), dst_thick, dmetric = 0,  o
 
 exageostat_initR <- function(hardware = list (ncores=2, ngpus=0, ts=320, lts=0, pgrid=1, qgrid=1), globalveclen)
 {
-		ncores<<- hardware$ncores
-		ngpus<<- hardware$ngpus
-		dts<<- hardware$ts
-		lts<<-hardware$lts
-		pgrid<<- hardware$pgrid
-		qgrid<<- hardware$qgrid
-		library("parallel")
-		Sys.setenv(OMP_NUM_THREADS=1)
-		Sys.setenv(STARPU_WORKERS_NOBIND=1)
-		mcaffinity(1:hardware$ncores)
+	ncores<<- hardware$ncores
+	ngpus<<- hardware$ngpus
+	dts<<- hardware$ts
+	lts<<-hardware$lts
+	pgrid<<- hardware$pgrid
+	qgrid<<- hardware$qgrid
+	 library(parallel)
+#	 library(foreach)
+#	 library(doParallel)
+#	machineVec <- c(rep("nid00816",4), rep("nid00817",4), rep("nid00818",4), rep("nid00819",4))
+#	c1<<-makeCluster(machineVec, port=22222)
+#	 registerDoParallel(c1)
+#	 getDoParWorkers()
+#	x = detectCores()
+#	print(x)
+	Sys.setenv(OMP_NUM_THREADS=1)
+	Sys.setenv(STARPU_WORKERS_NOBIND=1)
+        Sys.setenv(STARPU_CALIBRATE=1)
+        Sys.setenv(STARPU_SCHED="eager")
 
-		.C("rexageostat_init",
-				as.integer(ncores),
-				as.integer(ngpus),
-				as.integer(dts))
-		print("back from exageostat_init C function call. Hit key....")
+	mcaffinity(1:hardware$ncores)
+
+	.C("rexageostat_init",
+			as.integer(ncores),
+			as.integer(ngpus),
+			as.integer(dts))
+	print("back from exageostat_init C function call. Hit key....")
 }
 
 exageostat_finalizeR <- function()
 {
 	.C("rexageostat_finalize")
+#		stopCluster(c1)
 		print("back from exageostat_finalize C function call. Hit key....")
 }
 
