@@ -56,7 +56,7 @@ R Examples
 ================
 1. Test Generating Z vector using random (x, y) locations with exact MLE computation.
 ```r
-library("exageostat")                                           #Load ExaGeoStat-R lib.
+library("exageostat")                                          #Load ExaGeoStat-R lib.
 seed          = 0                                             #Initial seed to generate XY locs.
 sigma_sq      = 1                                             #Initial variance.
 beta          = 0.1                                           #Initial smoothness.
@@ -64,15 +64,15 @@ nu            = 0.5                                           #Initial range.
 dmetric       = 0                                             #0 --> Euclidean distance, 1--> great circle distance.
 n             = 1600                                          #n*n locations grid.
 #theta_out[1:3]                  = -1.99
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data          = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vector
+data          = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vector
 #Estimate MLE parameters (Exact)
-result        = exageostat_emleR(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result        = exact_mle(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()
 ```
 
 2. Test Generating Z vector using random (x, y) locations with TLR MLE computation.
@@ -88,14 +88,14 @@ tlr_acc         = 7                                             #Approximation a
 tlr_maxrank     = 450                                           #Max Rank
 
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, lts=600,  pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, lts=600,  pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data         = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
+data         = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (TLR approximation)
-result       = exageostat_tlrmleR(data, tlr_acc, tlr_maxrank,  dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result       = tlr_mle(data, tlr_acc, tlr_maxrank,  dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()
 ```
 
 3. Test Generating Z vector using random (x, y) locations with DST MLE computation.
@@ -109,14 +109,14 @@ dmetric         = 0                                             #0 --> Euclidean
 n               = 900                                           #n*n locations grid.
 dst_thick       = 3                                             #Number of used Diagonal Super Tile (DST).
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=4, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))
+exageostat_init(hardware = list (ncores=4, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))
 #Generate Z observation vector
-data      = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
+data      = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (DST approximation)
-result       = exageostat_dstmleR(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result       = dst_mle(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()
 ```
 4. Test Generating Z vector using given (x, y) locations with exact MLE computation.
 ```r
@@ -129,14 +129,14 @@ n               = 1600                                                  #n*n loc
 x               = rnorm(n = 1600, mean = 39.74, sd = 25.09)     #x measurements of n locations.
 y               = rnorm(n = 1600, mean = 80.45, sd = 100.19)    #y measurements of n locations.
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector based on given locations
-data          = exageostat_egenz_glR( x, y, sigma_sq, beta, nu, dmetric)
+data          = simulate_obs_exact( x, y, sigma_sq, beta, nu, dmetric)
 #Estimate MLE parameters (Exact)
-result        = exageostat_emleR(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result        = exact_mle(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()
 ```
 Batch R script to distributed environment example
 =================================================

@@ -23,11 +23,11 @@ n               = 1600                                                  #n*n loc
 x               = rnorm(n = 1600, mean = 39.74, sd = 25.09)     #x measurements of n locations.
 y               = rnorm(n = 1600, mean = 80.45, sd = 100.19)    #y measurements of n locations.
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector based on given locations
-data          = exageostat_egenz_glR( x, y, sigma_sq, beta, nu, dmetric)
+data          = simulate_obs_exact( x, y, sigma_sq, beta, nu, dmetric)
 #Estimate MLE parameters (Exact)
-result        = exageostat_emleR(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result        = exact_mle(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()

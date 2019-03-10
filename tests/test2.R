@@ -25,11 +25,11 @@ tlr_acc         = 7                                             #Approximation a
 tlr_maxrank     = 450                                           #Max Rank
 
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, lts=600,  pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, lts=600,  pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data      = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
+data      = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (TLR approximation)
-result       = exageostat_tlrmleR(data, tlr_acc, tlr_maxrank,  dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result       = tlr_mle(data, tlr_acc, tlr_maxrank,  dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()

@@ -23,11 +23,11 @@ dmetric         = 0                                             #0 --> Euclidean
 n               = 900                                           #n*n locations grid.
 dst_thick       = 3                                             #Number of used Diagonal Super Tile (DST).
 #Initiate exageostat instance
-exageostat_initR(hardware = list (ncores=4, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))
+exageostat_init(hardware = list (ncores=4, ngpus=0, ts=320, lts=0,  pgrid=1, qgrid=1))
 #Generate Z observation vector
-data      = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
+data      = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vecto
 #Estimate MLE parameters (DST approximation)
-result       = exageostat_dstmleR(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result       = dst_mle(data, dst_thick, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()

@@ -22,12 +22,12 @@ nu              = 0.5                                           #Initial range.
 dmetric         = 0                                             #0 --> Euclidean distance, 1--> great circle distance.
 n               = 1600                                          #n*n locations grid.
 #theta_out[1:3]                  = -1.99
-exageostat_initR(hardware = list (ncores=2, ngpus=0, ts=320, pgrid=1, qgrid=1))#Initiate exageostat instance
+exageostat_init(hardware = list (ncores=2, ngpus=0, ts=320, pgrid=1, qgrid=1))#Initiate exageostat instance
 #Generate Z observation vector
-data      = exageostat_egenzR(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vector
+data      = simulate_data_exact(sigma_sq, beta, nu, dmetric, n, seed) #Generate Z observation vector
 #Estimate MLE parameters (Exact)
-result        = exageostat_emleR(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
+result        = exact_mle(data, dmetric, optimization = list(clb = c(0.001, 0.001, 0.001), cub = c(5, 5,5 ), tol = 1e-4, max_iters = 20))
 
 #print(result)
 #Finalize exageostat instance
-exageostat_finalizeR()
+exageostat_finalize()
