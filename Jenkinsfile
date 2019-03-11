@@ -7,7 +7,7 @@ pipeline {
 //// By agent label:
 //    agent { label 'sandybridge' }
 
-    agent { label 'jenkinsfile' }
+    agent none
     triggers {
         pollSCM('H/15 * * * *')
     }
@@ -20,11 +20,20 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '50'))
         timestamps()
     }
-
     stages {
-        stage ('build-from-github') {
+        stage('Parallel Build Stage') {
+            //when {
+            //    branch 'master'
+            //}
+            // failFast true // abort when one stage fails
+            // failFast false // continue even when one stage fails
+            failFast false
+            parallel {
+                stage('From GitHub') {
+                agent {label "jenkinsfile" }
             steps {
                 withCredentials([string(credentialsId: '549fe118-9b01-49f6-9072-a813312a022b', variable: 'GITHUB_PAT')]) {
+                    echo "This stage will ALWAYS FAIL if the submodules are PRIVATE"
                     sh '''#!/bin/bash -le
 module purge
 module load ecrc-extras
@@ -46,7 +55,8 @@ Rscript tests/test1.R
                 }
             }
         }
-        stage ('build-locally') {
+                stage('Locally') {
+                agent {label "jenkinsfile" }
             steps {
                 sh '''#!/bin/bash -le
 module purge
@@ -77,7 +87,7 @@ Rscript tests/test1.R
 '''
             }
         }
-        stage ('build-gpu') {
+            stage ('Local with GPU Support') {
             agent { label 'jenkinsfile-gpu' }
             steps {
                 sh '''#!/bin/bash -le
@@ -106,6 +116,8 @@ Rscript tests/test1.R
 '''
             }
         }
+    }
+    }
     }
 
     // Post build actions
