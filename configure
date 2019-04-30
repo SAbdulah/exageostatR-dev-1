@@ -5,8 +5,11 @@
 #
 #
 
+#Get the number of CPUs
+cpucores=`getconf _NPROCESSORS_ONLN`
+
 #VARIABLES
-MAKE=${MAKE:-make -j 4 -l 5 }
+MAKE=${MAKE:-make -j $((cpucores-2)) }
 BASEDIR=$(pwd)
 TMPDIR=$BASEDIR/_$$
 BUILD_DEPENDENCIES='true'
