@@ -431,7 +431,7 @@ exageostat_init <-
     Sys.setenv(STARPU_WORKERS_NOBIND = 1)
     Sys.setenv(STARPU_CALIBRATE = 1)
     Sys.setenv(STARPU_SCHED = "eager")
-    
+    Sys.setenv(STARPU_SILENT = 1)    
     mcaffinity(1:hardware$ncores)
     
     .C("rexageostat_init",
