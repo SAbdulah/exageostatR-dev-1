@@ -278,8 +278,10 @@ else
         echo "Building CHAMELEON..."
         cd $BASEDIR/src/hicma/chameleon
         mkdir -p build && cd build
+        rm -rf ./CMake*
         cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX "$DEFINE_BLAS_LIBS_CMAKE"
-        $MAKE || $MAKE VERBOSE=1 && $MAKE install
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "CHAMELEON NOT FOUND"
@@ -301,8 +303,10 @@ else
         echo "Building STARS-H..."
         cd $BASEDIR/src/stars-h
         mkdir -p build && cd build
+        rm -rf ./CMake*
         cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE"
-        $MAKE || $MAKE VERBOSE=1 && $MAKE install
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "starsh NOT FOUND"
@@ -324,8 +328,10 @@ else
         echo "Building HiCMA..."
         cd $BASEDIR/src/hicma/
         mkdir -p build && cd build
+        rm -rf ./CMake*
         cmake .. -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE"
-        $MAKE || $MAKE VERBOSE=1 && $MAKE install
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "hicma NOT FOUND"
