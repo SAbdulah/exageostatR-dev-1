@@ -266,7 +266,7 @@ else
 fi
 
 cd $BASEDIR
-
+set -x
 # CHAMELEON
 if pkg-config --exists chameleon
 then
@@ -301,7 +301,7 @@ else
         echo "Building STARS-H..."
         cd $BASEDIR/src/stars-h
         mkdir -p build && cd build
-        cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" # "$DEFINE_BLAS_LIBS_CMAKE"
+        cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE"
         $MAKE || $MAKE VERBOSE=1 && $MAKE install
     else
         echo "####################"
@@ -324,7 +324,7 @@ else
         echo "Building HiCMA..."
         cd $BASEDIR/src/hicma/
         mkdir -p build && cd build
-        cmake .. -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" # "$DEFINE_BLAS_LIBS_CMAKE"
+        cmake .. -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE"
         $MAKE || $MAKE VERBOSE=1 && $MAKE install
     else
         echo "####################"
