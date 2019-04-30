@@ -99,12 +99,14 @@ case "$osType" in
     {
         echo "Running on Mac OSX."
         CURRENT_OS="OSX"
+        LIBEXT="dylib"
         export DYLD_LIBRARY_PATH=$PREFIX/lib:$DYLD_LIBRARY_PATH
     } ;;
     "Linux")
     {
         echo "Running on LINUX."
         CURRENT_OS="LINUX"
+        LIBEXT="so"
         export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
     } ;;
     *)
