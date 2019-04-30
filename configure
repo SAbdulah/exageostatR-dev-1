@@ -5,7 +5,11 @@
 #
 #
 
+#Get the number of CPUs
+cpucores=`getconf _NPROCESSORS_ONLN`
+
 #VARIABLES
+MAKE=${MAKE:-make -j $((cpucores-2)) }
 BASEDIR=$(pwd)
 TMPDIR=$BASEDIR/_$$
 BUILD_DEPENDENCIES='true'
@@ -98,12 +102,14 @@ case "$osType" in
     {
         echo "Running on Mac OSX."
         CURRENT_OS="OSX"
+        LIBEXT="dylib"
         export DYLD_LIBRARY_PATH=$PREFIX/lib:$DYLD_LIBRARY_PATH
     } ;;
     "Linux")
     {
         echo "Running on LINUX."
         CURRENT_OS="LINUX"
+        LIBEXT="so"
         export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
     } ;;
     *)
@@ -124,6 +130,9 @@ export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
 if [ -n "$MKLROOT" ] && [ -d "$MKLROOT" ]; then
     echo "mkl_dir directory exists!"
     echo "Great... continue set-up"
+    source ${MKLROOT}/bin/mklvars.sh intel64
+    DEFINE_BLAS_LIBS_CMAKE="-DBLAS_LIBRARIES='-L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl'"
+    #DEFINE_BLAS_LIBS_CMAKE="-DBLAS_LIBRARIES='-L${MKLROOT}/lib\ -Wl,-rpath,${MKLROOT}/lib\ -lmkl_intel_lp64\ -lmkl_sequential\ -lmkl_core\ -lpthread\ -lm\ -ldl'"
     XFLAG="-DBLA_VENDOR=Intel"
 else
     echo "MKL not found, trying to compile and use OpenBLAS"
@@ -148,7 +157,7 @@ then
             cd $TMPDIR
             wget https://github.com/xianyi/OpenBLAS/archive/v0.3.3.tar.gz -O - | tar -zx
             cd OpenBLAS-0.3.3
-            make -j  >/dev/null|| make && make install PREFIX=$PREFIX
+            $MAKE -j  >/dev/null|| $MAKE && $MAKE install PREFIX=$PREFIX
             export CPATH=$CPATH:$PREFIX/include
         else
             echo "####################"
@@ -174,7 +183,7 @@ else
         wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz -O - | tar -zx
         cd gsl-2.4
         ./configure --prefix=$PREFIX
-        make -j || make && make install
+        $MAKE -j || $MAKE && $MAKE install
     else
         echo "####################"
         echo "gsl NOT FOUND"
@@ -198,7 +207,7 @@ else
         wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz -O - | tar -zx
         cd nlopt-2.4.2
         ./configure --enable-shared --without-guile --prefix=$PREFIX
-        make -j || make && make install
+        $MAKE -j || $MAKE && $MAKE install
     else
         echo "####################"
         echo "nlopt NOT FOUND"
@@ -222,7 +231,7 @@ else
         wget https://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-1.11.5.tar.gz -O - | tar -zx
         cd hwloc-1.11.5
         ./configure --prefix=$PREFIX
-        make -j || make && make install
+        $MAKE -j || $MAKE && $MAKE install
     else
         echo "####################"
         echo "hwloc NOT FOUND"
@@ -250,7 +259,7 @@ else
         else
             ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
         fi
-        make -j || make && make install
+        $MAKE -j || $MAKE && $MAKE install
     else
         echo "####################"
         echo "StarPU NOT FOUND"
@@ -262,7 +271,7 @@ else
 fi
 
 cd $BASEDIR
-
+set -x
 # CHAMELEON
 if pkg-config --exists chameleon
 then
@@ -274,8 +283,10 @@ else
         echo "Building CHAMELEON..."
         cd $BASEDIR/src/hicma/chameleon
         mkdir -p build && cd build
-        cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
-        make -j 20 || make VERBOSE=1 && make install
+        rm -rf ./CMake*
+        cmake -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX "$DEFINE_BLAS_LIBS_CMAKE" ..
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "CHAMELEON NOT FOUND"
@@ -297,8 +308,10 @@ else
         echo "Building STARS-H..."
         cd $BASEDIR/src/stars-h
         mkdir -p build && cd build
-        cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX
-        make -j 20 || make VERBOSE=1 && make install
+        rm -rf ./CMake*
+        cmake -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ..
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "starsh NOT FOUND"
@@ -320,8 +333,10 @@ else
         echo "Building HiCMA..."
         cd $BASEDIR/src/hicma/
         mkdir -p build && cd build
-        cmake .. -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX
-        make -j 20 || make VERBOSE=1 && make install
+        rm -rf ./CMake*
+        cmake -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ..
+        $MAKE || $MAKE VERBOSE=1
+        $MAKE install
     else
         echo "####################"
         echo "hicma NOT FOUND"
@@ -335,6 +350,15 @@ fi
 # use rpaths in makefile
 # TODO use a R defined value por PREFIX and have this directly in the Makefile
 
+#Dummy makefile in src to trigger real one from cmake.
+cd $BASEDIR/
+rm -rf ./CMakeFiles ./CMakeCache.txt
+cmake -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ./src
+cat > src/Makefile << EOF
+.PHONY: all clean
+all:
+	(cd .. && make VERBOSE=1 && cp ./lib*.${LIBEXT} ./src/exageostat.so)
 
+EOF
 
 exit $err
