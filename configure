@@ -345,6 +345,15 @@ fi
 # use rpaths in makefile
 # TODO use a R defined value por PREFIX and have this directly in the Makefile
 
+#Dummy makefile in src to trigger real one from cmake.
+cd $BASEDIR/
+rm -rf ./CMakeFiles ./CMakeCache.txt
+cmake -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ./src
+cat > src/Makefile << EOF
+.PHONY: all clean
+all:
+	(cd .. && make VERBOSE=1 && cp ./lib*.${LIBEXT} ./src/exageostat.so)
 
+EOF
 
 exit $err
