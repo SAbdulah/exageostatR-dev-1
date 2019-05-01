@@ -19,12 +19,24 @@ Getting Started
 An easy installation of the above packages is available by using [build-deps.sh](https://github.com/ecrc/exageostatR/blob/master/build_deps.sh)
 
 
-#### Install latest ExaGeoStat-R version hosted on GitHub
+#### Install latest ExaGeoStat-R version hosted on GitHub(parallel installation)
 ```r
 install.packages("devtools")
-library(devtools)
-install_git(url="https://github.com/ecrc/exageostatR")
-library(exageostat)
+library("devtools")
+Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv("PKG_CONFIG_PATH"),paste(.libPaths(),"exageostat/lib/pkgconfig",sep='/',collapse=':'),sep=':'))
+Sys.setenv(MKLROOT="/opt/intel/mkl")
+install_git(url="https://github.com/ecrc/exageostatR-dev")
+```
+
+
+#### Install latest ExaGeoStat-R version hosted on GitHub (sequential installation)
+```r
+install.packages("devtools")
+library("devtools")
+Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv("PKG_CONFIG_PATH"),paste(.libPaths(),"exageostat/lib/pkgconfig",sep='/',collapse=':'),sep=':'))
+Sys.setenv(MKLROOT="/opt/intel/mkl")
+Sys.setenv(MAKE="make -j 1")
+install_git(url="https://github.com/ecrc/exageostatR-dev")
 ```
 
 
