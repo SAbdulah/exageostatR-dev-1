@@ -134,6 +134,7 @@ if [ -n "$MKLROOT" ] && [ -d "$MKLROOT" ]; then
     DEFINE_BLAS_LIBS_CMAKE="-DBLAS_LIBRARIES='-L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl'"
     #DEFINE_BLAS_LIBS_CMAKE="-DBLAS_LIBRARIES='-L${MKLROOT}/lib\ -Wl,-rpath,${MKLROOT}/lib\ -lmkl_intel_lp64\ -lmkl_sequential\ -lmkl_core\ -lpthread\ -lm\ -ldl'"
     XFLAG="-DBLA_VENDOR=Intel"
+    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so:$MKLROOT/lib/intel64/libmkl_avx2.so
 else
     echo "MKL not found, trying to compile and use OpenBLAS"
     XFLAG="-DBLA_VENDOR=Open"
@@ -358,7 +359,7 @@ fi
 #Dummy makefile in src to trigger real one from cmake.
 cd $BASEDIR/
 rm -rf ./CMakeFiles ./CMakeCache.txt
-cmake -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ./src
+cmake -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" -DEXAGEOSTAT_USE_MPI=$MPIVALUE ./src
 cat > src/Makefile << EOF
 .PHONY: all clean
 all:
