@@ -16,4 +16,4 @@ Description: ExaGeoStat-R is an R-wrapper for ExaGeoStat: a parallel
              and GPUs.
 License: GPL (version 2 or later)
 Packaged: Tuesday June 28 13:01:38 2018; sameh
-
+StagedInstall: no
