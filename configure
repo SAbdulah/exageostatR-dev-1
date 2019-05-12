@@ -358,7 +358,7 @@ fi
 #Dummy makefile in src to trigger real one from cmake.
 cd $BASEDIR/
 rm -rf ./CMakeFiles ./CMakeCache.txt
-cmake -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ./src
+cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_FLAGS_RELEASE="-O3 -Ofast" -DBUILD_SHARED_LIBS=ON -DEXAGEOSTAT_EXAMPLES=OFF "$XFLAG" "$DEFINE_BLAS_LIBS_CMAKE" ./src
 cat > src/Makefile << EOF
 .PHONY: all clean
 all:
