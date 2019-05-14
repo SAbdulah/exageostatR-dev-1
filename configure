@@ -261,7 +261,10 @@ else
         if [ "$CUDAVALUE" == "ON" ]; then
             ./configure --enable-cuda --disable-opencl --prefix=$PREFIX
         else
-            ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
+        if [ "$MPIVALUE" == "ON" ]; then
+            ./configure --disable-cuda --disable-opencl --prefix=$PREFIX --with-mpicc=cc
+	else
+	    ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
         fi
         $MAKE || $MAKE VERBOSE=1 || { echo 'STARPU installation failed' ; exit 1; }
         $MAKE install
