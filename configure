@@ -262,7 +262,7 @@ else
             ./configure --enable-cuda --disable-opencl --prefix=$PREFIX
         else
         if [ "$MPIVALUE" == "ON" ]; then
-            ./configure --disable-cuda --disable-opencl --prefix=$PREFIX --with-mpicc=cc
+            ./configure --disable-cuda --disable-opencl --prefix=$PREFIX --with-mpicc=/opt/cray/pe/craype/2.5.13/bin/cc 
 	else
 	    ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
         fi
