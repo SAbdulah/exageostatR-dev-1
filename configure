@@ -258,9 +258,6 @@ else
         cd $TMPDIR
         wget http://starpu.gforge.inria.fr/files/starpu-1.2.5/starpu-1.2.5.tar.gz -O - | tar -zx
         cd starpu-1.2.5
-        if [ "$CUDAVALUE" == "ON" ]; then
-            ./configure --enable-cuda --disable-opencl --prefix=$PREFIX
-        else
         if [ "$MPIVALUE" == "ON" ]; then
             ./configure --disable-cuda --disable-opencl --prefix=$PREFIX --with-mpicc=/opt/cray/pe/craype/2.5.13/bin/cc 
 	else
