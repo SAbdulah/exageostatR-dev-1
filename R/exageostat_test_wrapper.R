@@ -418,7 +418,7 @@ exageostat_init <-
     lts <<- hardware$lts
     pgrid <<- hardware$pgrid
     qgrid <<- hardware$qgrid
-    library(parallel)
+    #library(parallel)
     #        library(foreach)
     #        library(doParallel)
     #       machineVec <- c(rep("nid00816",4), rep("nid00817",4), rep("nid00818",4), rep("nid00819",4))
@@ -428,11 +428,12 @@ exageostat_init <-
     #       x = detectCores()
     #       print(x)
     Sys.setenv(OMP_NUM_THREADS = 1)
-    Sys.setenv(STARPU_WORKERS_NOBIND = 1)
+    #Sys.setenv(STARPU_WORKERS_NOBIND = 1)
     Sys.setenv(STARPU_CALIBRATE = 1)
-    Sys.setenv(STARPU_SCHED = "eager")
-    Sys.setenv(STARPU_SILENT = 1)    
-    mcaffinity(1:hardware$ncores)
+    #Sys.setenv(STARPU_SCHED = "eager")
+    Sys.setenv(STARPU_SILENT = 1) 
+    Sys.setenv(KMP_AFFINITY = "disabled")   
+    #mcaffinity(1:hardware$ncores)
     
     .C("rexageostat_init",
        as.integer(ncores),
